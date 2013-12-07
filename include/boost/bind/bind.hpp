@@ -1255,12 +1255,14 @@ template< class T > struct is_bind_expression
     enum _vt { value = 0 };
 };
 
+#if !defined( BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION )
 
 template< class R, class F, class L > struct is_bind_expression< _bi::bind_t< R, F, L > >
 {
     enum _vt { value = 1 };
 };
 
+#endif
 
 // bind
 

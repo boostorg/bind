@@ -30,23 +30,5 @@
         "category": [
             "Function-objects"
         ]
-    },
-    {
-        "key": "bind/ref",
-        "name": "Ref",
-        "authors": [
-            "Jaako Järvi",
-            "Peter Dimov",
-            "Doug Gregor",
-            "Dave Abrahams"
-        ],
-        "description": "A utility library for passing references to generic functions.",
-        "documentation": "ref.html",
-        "std": [
-            "tr1"
-        ],
-        "category": [
-            "Function-objects"
-        ]
     }
 ]

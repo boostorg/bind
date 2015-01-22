@@ -1,4 +1,4 @@
-[/
+﻿[/
  /  Copyright (c) 2001, 2002 Peter Dimov and Multi Media Ltd.
  /  Copyright (c) 2003-2008 Peter Dimov
  /
@@ -42,5 +42,7 @@ Mac Murrett contributed the "pascal" support enabled by
 
 The alternative `bind(type<R>(), f, ...)` syntax was inspired by a discussion
 with Dave Abrahams and Joel de Guzman.
+
+This documentation was ported to Quickbook by Agustín Bergé.
 
 [endsect]

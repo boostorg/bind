@@ -76,7 +76,7 @@ object store a reference to an object, rather than a copy:
 
     int i = 5;
     bind(f, ref(i), _1);
-    bind(f, cref(42), _1);
+    bind(f, cref(i), _1);
 
 [endsect]
 

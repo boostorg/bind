@@ -49,4 +49,5 @@ test-suite "bind"
       [ run mem_fn_unary_addr_test.cpp ]
       [ run bind_function2_test.cpp ]
       [ run bind_fwd_test.cpp ]
+      [ run bind_fwd2_test.cpp ]
     ;

@@ -21,6 +21,17 @@
 
 #include <boost/bind/bind.hpp>
 
+#if defined(BOOST_CLANG)
+# pragma clang diagnostic push
+#  if  __has_warning("-Wheader-hygiene")
+#   pragma clang diagnostic ignored "-Wheader-hygiene"
+# endif
+#endif
+
 using namespace boost::placeholders;
+
+#if defined(BOOST_CLANG)
+# pragma clang diagnostic pop
+#endif
 
 #endif // #ifndef BOOST_BIND_HPP_INCLUDED

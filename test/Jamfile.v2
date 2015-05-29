@@ -50,4 +50,5 @@ test-suite "bind"
       [ run bind_function2_test.cpp ]
       [ run bind_fwd_test.cpp ]
       [ run bind_fwd2_test.cpp ]
+      [ run bind_no_placeholders_test.cpp ]
     ;

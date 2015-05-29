@@ -21,6 +21,8 @@
 
 #include <boost/bind/bind.hpp>
 
+#ifndef BOOST_BIND_NO_PLACEHOLDERS
+
 #if defined(BOOST_CLANG)
 # pragma clang diagnostic push
 # if  __has_warning("-Wheader-hygiene")
@@ -33,5 +35,7 @@ using namespace boost::placeholders;
 #if defined(BOOST_CLANG)
 # pragma clang diagnostic pop
 #endif
+
+#endif // #ifndef BOOST_BIND_NO_PLACEHOLDERS
 
 #endif // #ifndef BOOST_BIND_HPP_INCLUDED

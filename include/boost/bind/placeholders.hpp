@@ -29,7 +29,7 @@ namespace boost
 namespace placeholders
 {
 
-#if defined(BOOST_NO_CXX11_CONSTEXPR)
+#if defined(__BORLANDC__) || defined(__GNUC__) && (__GNUC__ < 4)
 
 inline boost::arg<1> _1() { return boost::arg<1>(); }
 inline boost::arg<2> _2() { return boost::arg<2>(); }
@@ -43,15 +43,15 @@ inline boost::arg<9> _9() { return boost::arg<9>(); }
 
 #else
 
-static constexpr boost::arg<1> _1;
-static constexpr boost::arg<2> _2;
-static constexpr boost::arg<3> _3;
-static constexpr boost::arg<4> _4;
-static constexpr boost::arg<5> _5;
-static constexpr boost::arg<6> _6;
-static constexpr boost::arg<7> _7;
-static constexpr boost::arg<8> _8;
-static constexpr boost::arg<9> _9;
+BOOST_STATIC_CONSTEXPR boost::arg<1> _1;
+BOOST_STATIC_CONSTEXPR boost::arg<2> _2;
+BOOST_STATIC_CONSTEXPR boost::arg<3> _3;
+BOOST_STATIC_CONSTEXPR boost::arg<4> _4;
+BOOST_STATIC_CONSTEXPR boost::arg<5> _5;
+BOOST_STATIC_CONSTEXPR boost::arg<6> _6;
+BOOST_STATIC_CONSTEXPR boost::arg<7> _7;
+BOOST_STATIC_CONSTEXPR boost::arg<8> _8;
+BOOST_STATIC_CONSTEXPR boost::arg<9> _9;
 
 #endif
 

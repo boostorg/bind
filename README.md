@@ -1,5 +1,4 @@
-# bind
-Boost.org bind library
+# Boost.Bind
 
 Branch   | Travis | Appveyor
 ---------|--------|---------

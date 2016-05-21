@@ -9,6 +9,8 @@ branches:
     - master
     - develop
 
+build: no
+
 install:
   - git clone -b %APPVEYOR_REPO_BRANCH% https://github.com/boostorg/boost.git boost
   - cd boost

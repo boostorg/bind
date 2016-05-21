@@ -1,3 +1,7 @@
+# Copyright 2016 Peter Dimov
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
+
 language: cpp
 
 os:
@@ -10,7 +14,7 @@ branches:
     - develop
 
 install:
-  - git clone -b %TRAVIS_BRANCH% https://github.com/boostorg/boost.git boost
+  - git clone -b $TRAVIS_BRANCH https://github.com/boostorg/boost.git boost
   - cd boost
   - git submodule init libs/bind
   - git submodule init libs/assert
@@ -31,7 +35,7 @@ install:
   - git submodule init tools/inspect
   - git submodule update
   - cd libs\bind
-  - git checkout -q %TRAVIS_COMMIT%
+  - git checkout -q $TRAVIS_COMMIT
   - cd ..\..
   - bootstrap
   - b2 headers

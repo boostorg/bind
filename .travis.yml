@@ -37,8 +37,8 @@ install:
   - cd libs/bind
   - git checkout -q $TRAVIS_COMMIT
   - cd ../..
-  - bootstrap
-  - b2 headers
+  - ./bootstrap.sh
+  - ./b2 headers
 
 script:
-  - b2 libs/bind/test toolset=gcc,clang
+  - ./b2 libs/bind/test toolset=gcc,clang

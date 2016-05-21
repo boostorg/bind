@@ -34,9 +34,9 @@ install:
   - git submodule init tools/build
   - git submodule init tools/inspect
   - git submodule update
-  - cd libs\bind
+  - cd libs/bind
   - git checkout -q $TRAVIS_COMMIT
-  - cd ..\..
+  - cd ../..
   - bootstrap
   - b2 headers
 

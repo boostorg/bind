@@ -39,4 +39,4 @@ install:
 build: off
 
 test_script:
-  - b2 libs/bind/test toolset=msvc-9.0
+  - b2 libs/bind/test toolset=msvc-9.0,msvc-10.0,msvc-11.0,msvc-12.0

@@ -9,8 +9,6 @@ branches:
     - master
     - develop
 
-build: no
-
 install:
   - git clone -b %APPVEYOR_REPO_BRANCH% https://github.com/boostorg/boost.git boost
   - cd boost
@@ -37,6 +35,8 @@ install:
   - cd ..\..
   - bootstrap
   - b2 headers
+
+build: off
 
 test_script:
   - b2 libs/bind/test toolset=msvc-9.0

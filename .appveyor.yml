@@ -10,9 +10,8 @@ branches:
     - develop
 
 install:
-  - git clone https://github.com/boostorg/boost.git boost
+  - git clone -b %APPVEYOR_REPO_BRANCH% https://github.com/boostorg/boost.git boost
   - cd boost
-  - git checkout -q %APPVEYOR_REPO_COMMIT%
   - git submodule init libs/bind
   - git submodule init libs/assert
   - git submodule init libs/config
@@ -31,6 +30,9 @@ install:
   - git submodule init tools/build
   - git submodule init tools/inspect
   - git submodule update
+  - cd libs\bind
+  - git checkout -q %APPVEYOR_REPO_COMMIT%
+  - cd ..\..
   - bootstrap
   - b2 headers
 

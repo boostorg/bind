@@ -55,4 +55,5 @@ test-suite "bind"
       [ run bind_function_ap_test.cpp ]
       [ run bind_type_test.cpp ]
       [ run bind_unique_ptr_test.cpp ]
+      [ run bind_nested_rv_test.cpp ]
     ;

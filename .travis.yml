@@ -19,6 +19,7 @@ install:
   - git clone -b $TRAVIS_BRANCH https://github.com/boostorg/boost.git boost
   - cd boost
   - git submodule init libs/bind
+  - git submodule init libs/align
   - git submodule init libs/assert
   - git submodule init libs/config
   - git submodule init libs/core

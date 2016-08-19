@@ -21,10 +21,18 @@
 
 #include <boost/config.hpp>
 #include <boost/is_placeholder.hpp>
-#include <boost/static_assert.hpp>
 
 namespace boost
 {
+
+template< int I, int J > struct _arg_eq
+{
+};
+
+template< int I > struct _arg_eq< I, I>
+{
+    typedef void type;
+};
 
 template< int I > struct arg
 {
@@ -32,9 +40,8 @@ template< int I > struct arg
     {
     }
 
-    template< class T > BOOST_CONSTEXPR arg( T const & /* t */ )
+    template< class T > BOOST_CONSTEXPR arg( T const & /* t */, typename _arg_eq< I, is_placeholder<T>::value >::type * = 0 )
     {
-        BOOST_STATIC_ASSERT( I == is_placeholder<T>::value );
     }
 };
 

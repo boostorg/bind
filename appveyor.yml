@@ -33,9 +33,7 @@ install:
   - git submodule init tools/build
   - git submodule init tools/inspect
   - git submodule update
-  - cd libs\bind
-  - xcopy %APPVEYOR_BUILD_FOLDER% /s /e /q
-  - cd ..\..
+  - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\bind
   - bootstrap
   - b2 headers
 

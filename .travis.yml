@@ -16,9 +16,9 @@ branches:
     - develop
 
 install:
-  - git clone -b $TRAVIS_BRANCH https://github.com/boostorg/boost.git boost
-  - cd boost
-  - git submodule init libs/bind
+  - cd ..
+  - git clone -b $TRAVIS_BRANCH https://github.com/boostorg/boost.git boost-root
+  - cd boost-root
   - git submodule init libs/align
   - git submodule init libs/assert
   - git submodule init libs/config
@@ -37,9 +37,7 @@ install:
   - git submodule init tools/build
   - git submodule init tools/inspect
   - git submodule update
-  - cd libs/bind
-  - git checkout -q $TRAVIS_COMMIT
-  - cd ../..
+  - cp -r $TRAVIS_BUILD_DIR/* libs/bind
   - ./bootstrap.sh
   - ./b2 headers
 

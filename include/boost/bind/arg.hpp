@@ -25,11 +25,11 @@
 namespace boost
 {
 
-template< int I, int J > struct _arg_eq
+template<bool Eq> struct _arg_eq
 {
 };
 
-template< int I > struct _arg_eq< I, I>
+template<> struct _arg_eq<true>
 {
     typedef void type;
 };
@@ -40,7 +40,7 @@ template< int I > struct arg
     {
     }
 
-    template< class T > BOOST_CONSTEXPR arg( T const & /* t */, typename _arg_eq< I, is_placeholder<T>::value >::type * = 0 )
+    template< class T > BOOST_CONSTEXPR arg( T const & /* t */, typename _arg_eq< I == is_placeholder<T>::value >::type * = 0 )
     {
     }
 };

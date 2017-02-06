@@ -158,7 +158,7 @@ matrix:
           packages:
             - clang-3.6
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
 
     - os: linux
@@ -168,7 +168,7 @@ matrix:
           packages:
             - clang-3.6
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
 
     - os: linux
@@ -178,7 +178,7 @@ matrix:
           packages:
             - clang-3.7
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
 
     - os: linux
@@ -188,7 +188,7 @@ matrix:
           packages:
             - clang-3.7
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
 
     - os: linux
@@ -198,7 +198,7 @@ matrix:
           packages:
             - clang-3.8
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
 
     - os: linux
@@ -208,7 +208,7 @@ matrix:
           packages:
             - clang-3.8
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
 
     - os: linux
@@ -218,7 +218,7 @@ matrix:
           packages:
             - clang-3.8
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
 
     - os: linux
@@ -228,7 +228,7 @@ matrix:
           packages:
             - clang-3.8
           sources:
-            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
 
     - os: osx

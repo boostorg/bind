@@ -87,6 +87,11 @@ long f_9(long a, long b, long c, long d, long e, long f, long g, long h, long i)
     return global_result = a + 10 * b + 100 * c + 1000 * d + 10000 * e + 100000 * f + 1000000 * g + 10000000 * h + 100000000 * i;
 }
 
+struct X
+{
+  void f0() { global_result = 1; }
+};
+
 void function_test()
 {
     using namespace boost;
@@ -103,6 +108,8 @@ void function_test()
     BOOST_TEST( (bind<void>(f_7, _1, 2, 3, 4, 5, 6, 7)(i), (global_result == 7654321L)) );
     BOOST_TEST( (bind<void>(f_8, _1, 2, 3, 4, 5, 6, 7, 8)(i), (global_result == 87654321L)) );
     BOOST_TEST( (bind<void>(f_9, _1, 2, 3, 4, 5, 6, 7, 8, 9)(i), (global_result == 987654321L)) );
+
+    BOOST_TEST( (bind<void>(&X::f0, X())(), (global_result == 1L)) );
 }
 
 //

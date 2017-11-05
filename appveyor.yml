@@ -48,5 +48,5 @@ install:
 build: off
 
 test_script:
-  - if "%CXXSTD%" != "" set CXXSTD=cxxstd=%CXXSTD%
+  - if not "%CXXSTD%" == "" set CXXSTD=cxxstd=%CXXSTD%
   - b2 libs/bind/test toolset=%TOOLSET% %CXXSTD%

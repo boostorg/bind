@@ -62,3 +62,4 @@ run bind_nested_rv_test.cpp ;
 compile arg_copy_test.cpp ;
 compile-fail arg_copy_fail.cpp ;
 run placeholder_std_bind_test.cpp ;
+run bind_noexcept_test.cpp ;

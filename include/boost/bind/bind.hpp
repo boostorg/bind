@@ -2292,6 +2292,15 @@ template< class R, class T > struct add_cref< R (T::*) () const, 1 >
     typedef void type;
 };
 
+#ifdef __cpp_noexcept_function_type
+
+template< class R, class T > struct add_cref< R (T::*) () const noexcept, 1 >
+{
+    typedef void type;
+};
+
+#endif // __cpp_noexcept_function_type
+
 #endif // __IBMCPP__
 
 template<class R> struct isref

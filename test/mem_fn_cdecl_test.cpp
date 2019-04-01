@@ -1,6 +1,6 @@
 #include <boost/config.hpp>
 
-#ifndef BOOST_MSVC
+#if !defined(_WIN32) || defined(_WIN64) || defined(__MINGW64__)
 
 int main()
 {

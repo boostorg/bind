@@ -167,8 +167,8 @@ variable:
 [section Modeling STL function object concepts]
 
 The function objects that are produced by `bind` do not model the STL
-[@http://www.sgi.com/tech/stl/UnaryFunction.html /Unary Function/] or
-[@http://www.sgi.com/tech/stl/BinaryFunction.html /Binary Function/] concepts,
+[@https://boost.org/sgi/stl/UnaryFunction.html /Unary Function/] or
+[@https://boost.org/sgi/stl/BinaryFunction.html /Binary Function/] concepts,
 even when the function objects are unary or binary operations, because the
 function object types are missing public typedefs `result_type` and
 `argument_type` or `first_argument_type` and `second_argument_type`. In cases

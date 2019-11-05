@@ -21,6 +21,23 @@
 //  See http://www.boost.org/libs/bind/bind.html for documentation.
 //
 
+#if 1
+
+#include <boost/ref.hpp>
+#include <boost/mem_fn.hpp>
+#include <functional>
+
+namespace boost
+{
+
+using std::bind;
+
+namespace placeholders = std::placeholders;
+
+} // namespace boost
+
+#else
+
 #include <boost/config.hpp>
 #include <boost/ref.hpp>
 #include <boost/mem_fn.hpp>
@@ -2360,6 +2377,8 @@ BOOST_BIND( M T::*f, A1 a1 )
 #ifdef BOOST_MSVC
 # pragma warning(default: 4512) // assignment operator could not be generated
 # pragma warning(pop)
+#endif
+
 #endif
 
 #endif // #ifndef BOOST_BIND_BIND_HPP_INCLUDED

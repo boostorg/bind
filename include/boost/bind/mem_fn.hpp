@@ -21,6 +21,19 @@
 //  See http://www.boost.org/libs/bind/mem_fn.html for documentation.
 //
 
+#if 1
+
+#include <functional>
+
+namespace boost
+{
+
+using std::mem_fn;
+
+} // namespace boost
+
+#else
+
 #include <boost/config.hpp>
 #include <boost/get_pointer.hpp>
 #include <boost/detail/workaround.hpp>
@@ -385,5 +398,7 @@ template<class R, class T> _mfi::dm<R, T> mem_fn(R T::*f)
 }
 
 } // namespace boost
+
+#endif
 
 #endif // #ifndef BOOST_BIND_MEM_FN_HPP_INCLUDED

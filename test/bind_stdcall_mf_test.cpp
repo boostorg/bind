@@ -27,7 +27,7 @@ int main()
 
 #define BOOST_MEM_FN_ENABLE_STDCALL
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 #if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
 #pragma warning(push, 3)

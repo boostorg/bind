@@ -28,7 +28,7 @@
 #pragma warning(pop)
 #endif
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/detail/lightweight_test.hpp>
 
 int f( int x )

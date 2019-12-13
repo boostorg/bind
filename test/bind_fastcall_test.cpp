@@ -27,7 +27,7 @@ int main()
 
 #define BOOST_BIND_ENABLE_FASTCALL
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 #if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
 #pragma warning(push, 3)
@@ -40,6 +40,8 @@ int main()
 #endif
 
 #include <boost/detail/lightweight_test.hpp>
+
+using namespace boost::placeholders;
 
 //
 

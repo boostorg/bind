@@ -19,24 +19,11 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/ref.hpp>
-
-#ifdef BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-# include <boost/function_equal.hpp>
-#endif
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-#pragma warning(push, 3)
-#endif
-
-#include <iostream>
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-#pragma warning(pop)
-#endif
-
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 using namespace boost::placeholders;
+
+//
 
 struct X
 {
@@ -148,23 +135,11 @@ void fv_9(X, X, X, X, X, X, X, X, X)
 
 template<class F> void test_eq(F f1, F f2)
 {
-#ifdef BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-
-    using boost::function_equal;
-
-#endif
-
     BOOST_TEST( function_equal( f1, f2 ) );
 }
 
 template<class F> void test_ne(F f1, F f2)
 {
-#ifdef BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-
-    using boost::function_equal;
-
-#endif
-
     BOOST_TEST( !function_equal( f1, f2 ) );
 }
 

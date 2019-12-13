@@ -24,6 +24,8 @@ int main()
 
 using namespace boost::placeholders;
 
+//
+
 namespace std
 {
 

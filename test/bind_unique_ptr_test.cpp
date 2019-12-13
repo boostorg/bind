@@ -19,7 +19,7 @@ int main()
 //
 
 #include <boost/bind/bind.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 #include <memory>
 
 using namespace boost::placeholders;

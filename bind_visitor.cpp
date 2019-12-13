@@ -19,17 +19,8 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/ref.hpp>
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-#pragma warning(push, 3)
-#endif
-
 #include <iostream>
 #include <typeinfo>
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-#pragma warning(pop)
-#endif
 
 using namespace boost::placeholders;
 

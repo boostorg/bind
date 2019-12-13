@@ -10,9 +10,11 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/ref.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 using namespace boost::placeholders;
+
+//
 
 struct X
 {

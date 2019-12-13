@@ -19,9 +19,11 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/function_equal.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 using namespace boost::placeholders;
+
+//
 
 void f( int )
 {

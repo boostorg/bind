@@ -13,7 +13,7 @@
 #include <boost/bind/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/function.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 using namespace boost::placeholders;
 

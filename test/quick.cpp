@@ -14,6 +14,8 @@
 
 using namespace boost::placeholders;
 
+//
+
 int f( int a, int b, int c )
 {
     return a + 10 * b + 100 * c;

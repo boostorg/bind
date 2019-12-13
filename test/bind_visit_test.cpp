@@ -17,21 +17,12 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/visit_each.hpp>
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-# pragma warning(push, 3)
-#endif
-
-#include <iostream>
+#include <boost/core/lightweight_test.hpp>
 #include <typeinfo>
 
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-# pragma warning(pop)
-#endif
-
-#include <boost/detail/lightweight_test.hpp>
-
 using namespace boost::placeholders;
+
+//
 
 struct visitor
 {

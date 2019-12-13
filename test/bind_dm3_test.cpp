@@ -18,21 +18,12 @@
 //
 
 #include <boost/bind/bind.hpp>
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-#pragma warning(push, 3)
-#endif
-
-#include <iostream>
-
-#if defined(BOOST_MSVC) && (BOOST_MSVC < 1300)
-#pragma warning(pop)
-#endif
-
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 #include <utility>
 
 using namespace boost::placeholders;
+
+//
 
 int main()
 {

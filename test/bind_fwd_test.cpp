@@ -11,7 +11,7 @@
 //
 
 #include <boost/bind/bind.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 using namespace boost::placeholders;
 

@@ -293,7 +293,7 @@ matrix:
         - git clone -b $BOOST_BRANCH https://github.com/boostorg/config.git ../config
         - git clone -b $BOOST_BRANCH https://github.com/boostorg/core.git ../core
       script:
-      - cd libs/bind/test/cmake_subdir_test && mkdir __build__ && cd __build__
+      - cd test/cmake_subdir_test && mkdir __build__ && cd __build__
       - cmake ..
       - cmake --build .
       - cmake --build . --target check

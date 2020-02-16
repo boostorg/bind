@@ -23,13 +23,24 @@
 //  namespace are not a good practice and this use is deprecated.
 //  Please switch to including <boost/bind/bind.hpp> directly,
 //  adding the using directive locally where appropriate.
-
-#include <boost/config/header_deprecated.hpp>
-BOOST_HEADER_DEPRECATED( "<boost/bind/bind.hpp>" )
+//  Alternatively, the existing behavior may be preserved by defining
+//  the macro BOOST_BIND_GLOBAL_PLACEHOLDERS.
 
 #include <boost/bind/bind.hpp>
+#include <boost/config/pragma_message.hpp>
 
 #ifndef BOOST_BIND_NO_PLACEHOLDERS
+
+#if !defined(BOOST_BIND_GLOBAL_PLACEHOLDERS)
+
+BOOST_PRAGMA_MESSAGE(
+  "The practice of declaring the Bind placeholders (_1, _2, ...) "
+  "in the global namespace is deprecated. Please use "
+  "<boost/bind/bind.hpp> + using namespace boost::placeholders, "
+  "or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior."
+)
+
+#endif
 
 #if defined(BOOST_CLANG)
 # pragma clang diagnostic push

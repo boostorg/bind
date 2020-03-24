@@ -73,3 +73,4 @@ run mem_fn_stdcall_test.cpp ;
 run bind_noexcept_test.cpp ;
 run bind_noexcept_mf_test.cpp ;
 run global_placeholders.cpp ;
+run mem_fn_noexcept_test.cpp ;

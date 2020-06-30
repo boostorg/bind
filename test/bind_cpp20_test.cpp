@@ -4,6 +4,8 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/core/lightweight_test.hpp>
+#include <boost/config.hpp>
+#include <boost/config/workaround.hpp>
 #include <functional>
 
 //
@@ -28,9 +30,13 @@ int main()
     BOOST_TEST_EQ( boost::bind( std::logical_or<int>(), 1, 2 )(), true );
     BOOST_TEST_EQ( boost::bind( std::logical_not<int>(), 1 )(), false );
 
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1600)
+
     BOOST_TEST_EQ( boost::bind( std::bit_and<int>(), 1, 2 )(), 0 );
     BOOST_TEST_EQ( boost::bind( std::bit_or<int>(), 1, 2 )(), 3 );
     BOOST_TEST_EQ( boost::bind( std::bit_xor<int>(), 1, 2 )(), 3 );
+
+#endif
 
     return boost::report_errors();
 }

@@ -27,6 +27,7 @@
 #include <boost/type.hpp>
 #include <boost/is_placeholder.hpp>
 #include <boost/bind/arg.hpp>
+#include <boost/bind/detail/result_traits.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/visit_each.hpp>
 #include <boost/core/enable_if.hpp>
@@ -58,29 +59,6 @@ template<class T> class weak_ptr;
 
 namespace _bi // implementation details
 {
-
-// result_traits
-
-template<class R, class F> struct result_traits
-{
-    typedef R type;
-};
-
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING)
-
-struct unspecified {};
-
-template<class F> struct result_traits<unspecified, F>
-{
-    typedef typename F::result_type type;
-};
-
-template<class F> struct result_traits< unspecified, reference_wrapper<F> >
-{
-    typedef typename F::result_type type;
-};
-
-#endif
 
 // ref_compare
 

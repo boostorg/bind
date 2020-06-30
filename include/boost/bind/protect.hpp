@@ -24,15 +24,27 @@ namespace _bi
 
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_DECLTYPE)
 
-template<class F> class protected_bind_t
+template<class T> struct protect_make_void
+{
+    typedef void type;
+};
+
+template<class F, class E = void> struct protect_result_type
+{
+};
+
+template<class F> struct protect_result_type< F, typename protect_make_void<typename F::result_type>::type >
+{
+    typedef typename F::result_type result_type;
+};
+
+template<class F> class protected_bind_t: public protect_result_type<F>
 {
 private:
 
     F f_;
 
 public:
-
-    typedef typename F::result_type result_type;
 
     explicit protected_bind_t( F f ): f_( f )
     {

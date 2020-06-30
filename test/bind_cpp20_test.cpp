@@ -31,7 +31,6 @@ int main()
     BOOST_TEST_EQ( boost::bind( std::bit_and<int>(), 1, 2 )(), 0 );
     BOOST_TEST_EQ( boost::bind( std::bit_or<int>(), 1, 2 )(), 3 );
     BOOST_TEST_EQ( boost::bind( std::bit_xor<int>(), 1, 2 )(), 3 );
-    BOOST_TEST_EQ( boost::bind( std::bit_not<int>(), 1 )(), ~1 );
 
     return boost::report_errors();
 }

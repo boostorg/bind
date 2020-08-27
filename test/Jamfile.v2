@@ -77,3 +77,4 @@ run mem_fn_noexcept_test.cpp ;
 run bind_cpp20_test.cpp ;
 run protect_test2.cpp ;
 run protect_cpp20_test.cpp ;
+run bind_noexcept_mf2_test.cpp ;

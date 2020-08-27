@@ -2169,6 +2169,7 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #   undef BOOST_BIND_MF_NOEXCEPT
 #   define BOOST_BIND_MF_NOEXCEPT noexcept
 #   include <boost/bind/bind_mf_cc.hpp>
+#   include <boost/bind/bind_mf2_cc.hpp>
 # endif
 
 #undef BOOST_BIND_MF_NAME

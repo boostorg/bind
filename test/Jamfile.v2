@@ -78,3 +78,4 @@ run bind_cpp20_test.cpp ;
 run protect_test2.cpp ;
 run protect_cpp20_test.cpp ;
 run bind_noexcept_mf2_test.cpp ;
+run std_placeholders_test.cpp ;

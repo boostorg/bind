@@ -21,7 +21,9 @@
 //  See http://www.boost.org/libs/bind/bind.html for documentation.
 //
 
-#if defined(_MSVC_LANG) && _MSVC_LANG >= 17
+#if (defined(_MSVC_LANG) && _MSVC_LANG >= 17) 
+ || (defined(_LIBCPP_VERSION) && _LIBCPP_VERSION >= 13000 && __cplusplus >= 202002L)
+#define BOOST_BIND_FUNCTIONAL_RESULT_TRAITS 1
 #include <functional>
 #endif
 
@@ -48,7 +50,7 @@ template<class F> struct result_traits< unspecified, reference_wrapper<F> >
     typedef typename F::result_type type;
 };
 
-#if defined(_MSVC_LANG) && _MSVC_LANG >= 17
+#if BOOST_BIND_FUNCTIONAL_RESULT_TRAITS
 
 template<class T> struct result_traits< unspecified, std::plus<T> >
 {

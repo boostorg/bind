@@ -43,7 +43,7 @@ jobs:
             cxxstd: "03,11,14,17,2a"
             os: ubuntu-20.04
             install: g++-10
-          - toolset: gcc-10
+          - toolset: gcc-11
             cxxstd: "03,11,14,17,2a"
             os: ubuntu-20.04
             install: g++-11

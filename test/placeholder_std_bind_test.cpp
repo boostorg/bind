@@ -10,7 +10,7 @@
 
 #include <boost/config.hpp>
 
-#if defined( BOOST_NO_CXX11_HDR_FUNCTIONAL )
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( defined(BOOST_GCC) && BOOST_GCC < 40600 )
 
 int main()
 {

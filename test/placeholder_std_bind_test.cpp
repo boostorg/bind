@@ -9,12 +9,17 @@
 //
 
 #include <boost/config.hpp>
+#include <boost/config/pragma_message.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( defined(BOOST_GCC) && BOOST_GCC < 40600 )
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 
-int main()
-{
-}
+BOOST_PRAGMA_MESSAGE( "Skipping test because BOOST_NO_CXX11_HDR_FUNCTIONAL is defined" )
+int main() {}
+
+#elif defined(BOOST_GCC) && BOOST_GCC < 40600
+
+BOOST_PRAGMA_MESSAGE( "Skipping test because BOOST_GCC is less than 40600" )
+int main() {}
 
 #else
 

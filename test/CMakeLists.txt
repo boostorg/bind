@@ -6,6 +6,6 @@ include(BoostTestJamfile OPTIONAL RESULT_VARIABLE HAVE_BOOST_TEST)
 
 if(HAVE_BOOST_TEST)
 
-boost_test_jamfile(FILE Jamfile.v2 LINK_LIBRARIES Boost::bind Boost::core Boost::function Boost::smart_ptr)
+boost_test_jamfile(FILE Jamfile.v2 LINK_LIBRARIES Boost::bind Boost::core Boost::function Boost::smart_ptr Boost::type_traits)
 
 endif()

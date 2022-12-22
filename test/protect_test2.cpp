@@ -6,11 +6,11 @@
 
 #include <boost/bind/protect.hpp>
 #include <boost/core/lightweight_test_trait.hpp>
-#include <boost/core/is_same.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 template<class T, class F> void test( F )
 {
-    BOOST_TEST_TRAIT_TRUE((boost::core::is_same<typename T::result_type, typename F::result_type>));
+    BOOST_TEST_TRAIT_TRUE((boost::is_same<typename T::result_type, typename F::result_type>));
 }
 
 struct X
@@ -29,7 +29,7 @@ template<class T, class U> struct inherit: T, U
 template<class F> void test2( F )
 {
     // test that F doesn't have ::result_type
-    BOOST_TEST_TRAIT_TRUE((boost::core::is_same<typename inherit<F, X>::result_type, typename X::result_type>));
+    BOOST_TEST_TRAIT_TRUE((boost::is_same<typename inherit<F, X>::result_type, typename X::result_type>));
 }
 
 int main()

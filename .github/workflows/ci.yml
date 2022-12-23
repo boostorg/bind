@@ -118,7 +118,7 @@ jobs:
     runs-on: ${{matrix.os}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install packages
         if: matrix.install
@@ -185,7 +185,7 @@ jobs:
     runs-on: ${{matrix.os}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Boost
         shell: cmd
@@ -220,15 +220,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-18.04
           - os: ubuntu-20.04
           - os: ubuntu-22.04
           - os: macos-11
+          - os: macos-12
 
     runs-on: ${{matrix.os}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install packages
         if: matrix.install
@@ -267,15 +267,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-18.04
           - os: ubuntu-20.04
           - os: ubuntu-22.04
           - os: macos-11
+          - os: macos-12
 
     runs-on: ${{matrix.os}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install packages
         if: matrix.install
@@ -324,15 +324,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-18.04
           - os: ubuntu-20.04
           - os: ubuntu-22.04
           - os: macos-11
+          - os: macos-12
 
     runs-on: ${{matrix.os}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install packages
         if: matrix.install

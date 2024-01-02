@@ -1416,7 +1416,7 @@ public:
     }
 };
 
-#elif !defined( BOOST_NO_VOID_RETURNS )
+#else
 
 template<class R, class F, class L> class bind_t
 {
@@ -1426,61 +1426,7 @@ public:
 
     bind_t(F f, L const & l): f_(f), l_(l) {}
 
-#define BOOST_BIND_RETURN return
 #include <boost/bind/bind_template.hpp>
-#undef BOOST_BIND_RETURN
-
-};
-
-#else // no void returns
-
-template<class R> struct bind_t_generator
-{
-
-template<class F, class L> class implementation
-{
-public:
-
-    typedef implementation this_type;
-
-    implementation(F f, L const & l): f_(f), l_(l) {}
-
-#define BOOST_BIND_RETURN return
-#include <boost/bind/bind_template.hpp>
-#undef BOOST_BIND_RETURN
-
-};
-
-};
-
-template<> struct bind_t_generator<void>
-{
-
-template<class F, class L> class implementation
-{
-private:
-
-    typedef void R;
-
-public:
-
-    typedef implementation this_type;
-
-    implementation(F f, L const & l): f_(f), l_(l) {}
-
-#define BOOST_BIND_RETURN
-#include <boost/bind/bind_template.hpp>
-#undef BOOST_BIND_RETURN
-
-};
-
-};
-
-template<class R2, class F, class L> class bind_t: public bind_t_generator<R2>::BOOST_NESTED_TEMPLATE implementation<F, L>
-{
-public:
-
-    bind_t(F f, L const & l): bind_t_generator<R2>::BOOST_NESTED_TEMPLATE implementation<F, L>(f, l) {}
 
 };
 

@@ -29,13 +29,8 @@
 namespace boost
 {
 
-#define BOOST_MEM_FN_CLASS_F
-#define BOOST_MEM_FN_TYPEDEF(X) typedef X;
-
 namespace _mfi
 {
-
-#define BOOST_MEM_FN_RETURN return
 
 #define BOOST_MEM_FN_NAME(X) X
 #define BOOST_MEM_FN_CC
@@ -81,12 +76,7 @@ namespace _mfi
 
 #endif
 
-#undef BOOST_MEM_FN_RETURN
-
 } // namespace _mfi
-
-#undef BOOST_MEM_FN_CLASS_F
-#undef BOOST_MEM_FN_TYPEDEF
 
 //
 

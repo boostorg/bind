@@ -83,3 +83,4 @@ run apply_test.cpp ;
 run apply_test2.cpp ;
 run apply_rv_test.cpp ;
 run apply_rv_test2.cpp ;
+run bind_over_test.cpp ;

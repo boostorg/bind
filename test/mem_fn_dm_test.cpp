@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/core/ref.hpp>
 #include <boost/core/lightweight_test.hpp>
+#include <boost/config/workaround.hpp>
 
 struct X
 {
@@ -57,17 +58,27 @@ int main()
     BOOST_TEST_EQ( boost::mem_fn( &X::m )( boost::ref( x ) ), 603 );
     BOOST_TEST_EQ( boost::mem_fn( &X::m )( boost::cref( x ) ), 603 );
 
-    // boost::mem_fn( &X::m )( boost::ref( x ) ) = 704;
-    // BOOST_TEST_EQ( x.m, 704 );
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1900)
+
+    boost::mem_fn( &X::m )( boost::ref( x ) ) = 704;
+    BOOST_TEST_EQ( x.m, 704 );
+
+#endif
 
     boost::shared_ptr<X> sp( new X() );
     boost::shared_ptr<X const> csp( sp );
 
-    BOOST_TEST_EQ( boost::mem_fn( &X::m )( sp ), 0 );
-    BOOST_TEST_EQ( boost::mem_fn( &X::m )( csp ), 0 );
+    sp->m = 805;
 
-    // boost::mem_fn( &X::m )( sp ) = 805;
-    // BOOST_TEST_EQ( x.m, 805 );
+    BOOST_TEST_EQ( boost::mem_fn( &X::m )( sp ), 805 );
+    BOOST_TEST_EQ( boost::mem_fn( &X::m )( csp ), 805 );
+
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1900)
+
+    boost::mem_fn( &X::m )( sp ) = 906;
+    BOOST_TEST_EQ( sp->m, 906 );
+
+#endif
 
     return boost::report_errors();
 }

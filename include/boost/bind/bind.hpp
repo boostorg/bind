@@ -1870,12 +1870,12 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_ST
 #define BOOST_BIND_NOEXCEPT
 
-#include <boost/bind/bind_cc.hpp>
+#include <boost/bind/detail/bind_cc.hpp>
 
 # if defined( __cpp_noexcept_function_type ) || defined( _NOEXCEPT_TYPES_SUPPORTED )
 #   undef BOOST_BIND_NOEXCEPT
 #   define BOOST_BIND_NOEXCEPT noexcept
-#   include <boost/bind/bind_cc.hpp>
+#   include <boost/bind/detail/bind_cc.hpp>
 # endif
 
 #undef BOOST_BIND_CC
@@ -1888,7 +1888,7 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_ST
 #define BOOST_BIND_NOEXCEPT
 
-#include <boost/bind/bind_cc.hpp>
+#include <boost/bind/detail/bind_cc.hpp>
 
 #undef BOOST_BIND_CC
 #undef BOOST_BIND_ST
@@ -1902,7 +1902,7 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_ST
 #define BOOST_BIND_NOEXCEPT
 
-#include <boost/bind/bind_cc.hpp>
+#include <boost/bind/detail/bind_cc.hpp>
 
 #undef BOOST_BIND_CC
 #undef BOOST_BIND_ST
@@ -1916,7 +1916,7 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_CC
 #define BOOST_BIND_NOEXCEPT
 
-#include <boost/bind/bind_cc.hpp>
+#include <boost/bind/detail/bind_cc.hpp>
 
 #undef BOOST_BIND_ST
 #undef BOOST_BIND_CC
@@ -1930,14 +1930,14 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_MF_CC
 #define BOOST_BIND_MF_NOEXCEPT
 
-#include <boost/bind/bind_mf_cc.hpp>
-#include <boost/bind/bind_mf2_cc.hpp>
+#include <boost/bind/detail/bind_mf_cc.hpp>
+#include <boost/bind/detail/bind_mf2_cc.hpp>
 
 # if defined( __cpp_noexcept_function_type ) || defined( _NOEXCEPT_TYPES_SUPPORTED )
 #   undef BOOST_BIND_MF_NOEXCEPT
 #   define BOOST_BIND_MF_NOEXCEPT noexcept
-#   include <boost/bind/bind_mf_cc.hpp>
-#   include <boost/bind/bind_mf2_cc.hpp>
+#   include <boost/bind/detail/bind_mf_cc.hpp>
+#   include <boost/bind/detail/bind_mf2_cc.hpp>
 # endif
 
 #undef BOOST_BIND_MF_NAME
@@ -1950,8 +1950,8 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_MF_CC __cdecl
 #define BOOST_BIND_MF_NOEXCEPT
 
-#include <boost/bind/bind_mf_cc.hpp>
-#include <boost/bind/bind_mf2_cc.hpp>
+#include <boost/bind/detail/bind_mf_cc.hpp>
+#include <boost/bind/detail/bind_mf2_cc.hpp>
 
 #undef BOOST_BIND_MF_NAME
 #undef BOOST_BIND_MF_CC
@@ -1965,8 +1965,8 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_MF_CC __stdcall
 #define BOOST_BIND_MF_NOEXCEPT
 
-#include <boost/bind/bind_mf_cc.hpp>
-#include <boost/bind/bind_mf2_cc.hpp>
+#include <boost/bind/detail/bind_mf_cc.hpp>
+#include <boost/bind/detail/bind_mf2_cc.hpp>
 
 #undef BOOST_BIND_MF_NAME
 #undef BOOST_BIND_MF_CC
@@ -1980,8 +1980,8 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 #define BOOST_BIND_MF_CC __fastcall
 #define BOOST_BIND_MF_NOEXCEPT
 
-#include <boost/bind/bind_mf_cc.hpp>
-#include <boost/bind/bind_mf2_cc.hpp>
+#include <boost/bind/detail/bind_mf_cc.hpp>
+#include <boost/bind/detail/bind_mf2_cc.hpp>
 
 #undef BOOST_BIND_MF_NAME
 #undef BOOST_BIND_MF_CC

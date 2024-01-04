@@ -21,13 +21,22 @@
 //  See http://www.boost.org/libs/bind/mem_fn.html for documentation.
 //
 
-#include <boost/bind/detail/requires_cxx11.hpp>
 #include <boost/get_pointer.hpp>
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
+#include <type_traits>
 
 namespace boost
 {
+
+namespace _mfi
+{
+
+template<class T> struct remove_cvref: std::remove_cv< typename std::remove_reference<T>::type >
+{
+};
+
+} // namespace _mfi
 
 namespace _mfi
 {
@@ -152,60 +161,62 @@ public:
 
 private:
     
-    typedef R (T::*F);
-    F f_;
-
-    template<class U> R const & call(U & u, T const *) const
-    {
-        return (u.*f_);
-    }
-
-    template<class U> R const & call(U & u, void const *) const
-    {
-        return (get_pointer(u)->*f_);
-    }
+    typedef R (T::*Pm);
+    Pm pm_;
 
 public:
-    
-    explicit dm(F f): f_(f) {}
 
-    R & operator()(T * p) const
+    explicit dm( Pm pm ): pm_( pm ) {}
+
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class En = typename std::enable_if<
+            std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value
+        >::type
+    >
+
+    auto operator()( U&& u ) const -> decltype( std::forward<U>( u ).*pm_ )
     {
-        return (p->*f_);
+        return std::forward<U>( u ).*pm_;
     }
 
-    R const & operator()(T const * p) const
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class E1 = void,
+        class En = typename std::enable_if<
+            !(std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value)
+        >::type
+    >
+
+    auto operator()( U&& u ) const -> decltype( get_pointer( std::forward<U>( u ) )->*pm_ )
     {
-        return (p->*f_);
+        return get_pointer( std::forward<U>( u ) )->*pm_;
     }
 
-    template<class U> R const & operator()(U const & u) const
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1910)
+
+    template<class U>
+    R& operator()( U* u ) const
     {
-        return call(u, &u);
+        return u->*pm_;
     }
 
-#if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300) && !BOOST_WORKAROUND(__MWERKS__, < 0x3200)
-
-    R & operator()(T & t) const
+    template<class U>
+    R const& operator()( U const* u ) const
     {
-        return (t.*f_);
-    }
-
-    R const & operator()(T const & t) const
-    {
-        return (t.*f_);
+        return u->*pm_;
     }
 
 #endif
 
-    bool operator==(dm const & rhs) const
+    bool operator==( dm const & rhs ) const
     {
-        return f_ == rhs.f_;
+        return pm_ == rhs.pm_;
     }
 
-    bool operator!=(dm const & rhs) const
+    bool operator!=( dm const & rhs ) const
     {
-        return f_ != rhs.f_;
+        return pm_ != rhs.pm_;
     }
 };
 

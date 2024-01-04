@@ -1,5 +1,15 @@
+#include <boost/config.hpp>
+
+#ifndef BOOST_MSVC
+
+int main()
+{
+}
+
+#else
+
 //
-//  mem_fn_ref_test.cpp - reference_wrapper
+//  mem_fn_fastcall_ref_test.cpp - reference_wrapper, fastcall
 //
 //  Copyright 2009, 2024 Peter Dimov
 //
@@ -8,23 +18,25 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 //
 
+#define BOOST_MEM_FN_ENABLE_FASTCALL
+
 #include <boost/mem_fn.hpp>
 #include <boost/ref.hpp>
 #include <boost/core/lightweight_test.hpp>
 
 struct X
 {
-    int f0() { return 1; }
-    int g0() const { return -1; }
+    int __fastcall f0() { return 1; }
+    int __fastcall g0() const { return -1; }
 
-    int f1( int x1 ) { return x1; }
-    int g1( int x1 ) const { return -x1; }
+    int __fastcall f1( int x1 ) { return x1; }
+    int __fastcall g1( int x1 ) const { return -x1; }
 
-    int f2( int x1, int x2 ) { return x1+x2; }
-    int g2( int x1, int x2 ) const { return -x1-x2; }
+    int __fastcall f2( int x1, int x2 ) { return x1+x2; }
+    int __fastcall g2( int x1, int x2 ) const { return -x1-x2; }
 
-    int f3( int x1, int x2, int x3 ) { return x1+x2+x3; }
-    int g3( int x1, int x2, int x3 ) const { return -x1-x2-x3; }
+    int __fastcall f3( int x1, int x2, int x3 ) { return x1+x2+x3; }
+    int __fastcall g3( int x1, int x2, int x3 ) const { return -x1-x2-x3; }
 };
 
 int main()
@@ -45,3 +57,5 @@ int main()
 
     return boost::report_errors();
 }
+
+#endif

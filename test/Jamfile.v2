@@ -83,3 +83,6 @@ run apply_test.cpp ;
 run apply_test2.cpp ;
 run apply_rv_test.cpp ;
 run apply_rv_test2.cpp ;
+run mem_fn_cdecl_ref_test.cpp ;
+run mem_fn_stdcall_ref_test.cpp ;
+run mem_fn_fastcall_ref_test.cpp ;

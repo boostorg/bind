@@ -8,9 +8,9 @@
 #endif
 
 //
-//  mem_fn_dm_test.cpp - data members
+// mem_fn_dm_test.cpp - data members
 //
-//  Copyright (c) 2005 Peter Dimov
+// Copyright 2005, 2024 Peter Dimov
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -18,6 +18,7 @@
 //
 
 #include <boost/mem_fn.hpp>
+#include <boost/core/ref.hpp>
 #include <boost/core/lightweight_test.hpp>
 
 struct X
@@ -51,6 +52,12 @@ int main()
 
     BOOST_TEST( boost::mem_fn( &X::m )( cx ) == 603 );
     BOOST_TEST( boost::mem_fn( &X::m )( pcx ) == 603 );
+
+    BOOST_TEST_EQ( boost::mem_fn( &X::m )( boost::ref( x ) ), 603 );
+    BOOST_TEST_EQ( boost::mem_fn( &X::m )( boost::cref( x ) ), 603 );
+
+    // boost::mem_fn( &X::m )( boost::ref( x ) ) = 704;
+    // BOOST_TEST_EQ( x.m, 704 );
 
     return boost::report_errors();
 }

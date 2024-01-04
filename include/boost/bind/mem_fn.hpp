@@ -89,63 +89,81 @@ public:
 
 //
 
-#define BOOST_MEM_FN_NAME(X) X
-#define BOOST_MEM_FN_CC
-#define BOOST_MEM_FN_NOEXCEPT
+template<class R, class T, class... A>
+auto mem_fn( R (T::*pmf) (A...) ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#include <boost/bind/mem_fn_cc.hpp>
+template<class R, class T, class... A>
+auto mem_fn( R (T::*pmf) (A...) const ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
 #if defined( __cpp_noexcept_function_type ) || defined( _NOEXCEPT_TYPES_SUPPORTED )
-#  undef BOOST_MEM_FN_NOEXCEPT
-#  define BOOST_MEM_FN_NOEXCEPT noexcept
-#  include <boost/bind/mem_fn_cc.hpp>
-#endif
 
-#undef BOOST_MEM_FN_NAME
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NOEXCEPT
+template<class R, class T, class... A>
+auto mem_fn( R (T::*pmf) (A...) noexcept ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
+
+template<class R, class T, class... A>
+auto mem_fn( R (T::*pmf) (A...) const noexcept ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
+
+#endif // #if defined( __cpp_noexcept_function_type ) || defined( _NOEXCEPT_TYPES_SUPPORTED )
 
 #if defined(BOOST_MEM_FN_ENABLE_CDECL) && !defined(_M_X64)
 
-#define BOOST_MEM_FN_NAME(X) X##_cdecl
-#define BOOST_MEM_FN_CC __cdecl
-#define BOOST_MEM_FN_NOEXCEPT
+template<class R, class T, class... A>
+auto mem_fn( R (__cdecl T::*pmf) (A...) ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#include <boost/bind/mem_fn_cc.hpp>
+template<class R, class T, class... A>
+auto mem_fn( R (__cdecl T::*pmf) (A...) const ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#undef BOOST_MEM_FN_NAME
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NOEXCEPT
-
-#endif
+#endif // #if defined(BOOST_MEM_FN_ENABLE_CDECL) && !defined(_M_X64)
 
 #if defined(BOOST_MEM_FN_ENABLE_STDCALL) && !defined(_M_X64)
 
-#define BOOST_MEM_FN_NAME(X) X##_stdcall
-#define BOOST_MEM_FN_CC __stdcall
-#define BOOST_MEM_FN_NOEXCEPT
+template<class R, class T, class... A>
+auto mem_fn( R (__stdcall T::*pmf) (A...) ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#include <boost/bind/mem_fn_cc.hpp>
+template<class R, class T, class... A>
+auto mem_fn( R (__stdcall T::*pmf) (A...) const ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#undef BOOST_MEM_FN_NAME
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NOEXCEPT
-
-#endif
+#endif // #if defined(BOOST_MEM_FN_ENABLE_STDCALL) && !defined(_M_X64)
 
 #if defined(BOOST_MEM_FN_ENABLE_FASTCALL) && !defined(_M_X64)
 
-#define BOOST_MEM_FN_NAME(X) X##_fastcall
-#define BOOST_MEM_FN_CC __fastcall
-#define BOOST_MEM_FN_NOEXCEPT
+template<class R, class T, class... A>
+auto mem_fn( R (__fastcall T::*pmf) (A...) ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#include <boost/bind/mem_fn_cc.hpp>
+template<class R, class T, class... A>
+auto mem_fn( R (__fastcall T::*pmf) (A...) const ) -> _mfi::mf<decltype(pmf), R, T, A...>
+{
+    return pmf;
+}
 
-#undef BOOST_MEM_FN_NAME
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NOEXCEPT
-
-#endif
+#endif // #if defined(BOOST_MEM_FN_ENABLE_FASTCALL) && !defined(_M_X64)
 
 // data member support
 

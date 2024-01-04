@@ -52,6 +52,26 @@ void overloaded_member_function_test()
     BOOST_TEST_EQ( boost::bind( &X::f, &x, 1, 2, 3, 4, 5, 6, 7 )(), 1+2+3+4+5+6+7 );
     BOOST_TEST_EQ( boost::bind( &X::f, &x, 1, 2, 3, 4, 5, 6, 7, 8 )(), 1+2+3+4+5+6+7+8 );
 
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x )(), 17041 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1 )(), 1 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2 )(), 1+2 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2, 3 )(), 1+2+3 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2, 3, 4 )(), 1+2+3+4 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2, 3, 4, 5 )(), 1+2+3+4+5 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2, 3, 4, 5, 6 )(), 1+2+3+4+5+6 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2, 3, 4, 5, 6, 7 )(), 1+2+3+4+5+6+7 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::f, &x, 1, 2, 3, 4, 5, 6, 7, 8 )(), 1+2+3+4+5+6+7+8 );
+
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x )(), 17041 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1 )(), 1 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2 )(), 1+2 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2, 3 )(), 1+2+3 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2, 3, 4 )(), 1+2+3+4 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2, 3, 4, 5 )(), 1+2+3+4+5 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2, 3, 4, 5, 6 )(), 1+2+3+4+5+6 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2, 3, 4, 5, 6, 7 )(), 1+2+3+4+5+6+7 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::f, &x, 1, 2, 3, 4, 5, 6, 7, 8 )(), 1+2+3+4+5+6+7+8 );
+
     X const* pcx = &x;
 
     BOOST_TEST_EQ( boost::bind( &X::g, pcx )(), 17041 );
@@ -63,6 +83,26 @@ void overloaded_member_function_test()
     BOOST_TEST_EQ( boost::bind( &X::g, pcx, 1, 2, 3, 4, 5, 6 )(), 1+2+3+4+5+6 );
     BOOST_TEST_EQ( boost::bind( &X::g, pcx, 1, 2, 3, 4, 5, 6, 7 )(), 1+2+3+4+5+6+7 );
     BOOST_TEST_EQ( boost::bind( &X::g, pcx, 1, 2, 3, 4, 5, 6, 7, 8 )(), 1+2+3+4+5+6+7+8 );
+
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx )(), 17041 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1 )(), 1 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2 )(), 1+2 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2, 3 )(), 1+2+3 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2, 3, 4 )(), 1+2+3+4 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2, 3, 4, 5 )(), 1+2+3+4+5 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2, 3, 4, 5, 6 )(), 1+2+3+4+5+6 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2, 3, 4, 5, 6, 7 )(), 1+2+3+4+5+6+7 );
+    BOOST_TEST_EQ( boost::bind<int>( &X::g, pcx, 1, 2, 3, 4, 5, 6, 7, 8 )(), 1+2+3+4+5+6+7+8 );
+
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx )(), 17041 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1 )(), 1 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2 )(), 1+2 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2, 3 )(), 1+2+3 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2, 3, 4 )(), 1+2+3+4 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2, 3, 4, 5 )(), 1+2+3+4+5 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2, 3, 4, 5, 6 )(), 1+2+3+4+5+6 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2, 3, 4, 5, 6, 7 )(), 1+2+3+4+5+6+7 );
+    BOOST_TEST_EQ( boost::bind<long>( &X::g, pcx, 1, 2, 3, 4, 5, 6, 7, 8 )(), 1+2+3+4+5+6+7+8 );
 }
 
 int main()

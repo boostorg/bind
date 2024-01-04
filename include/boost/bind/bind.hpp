@@ -50,22 +50,22 @@ namespace _bi // implementation details
 
 // ref_compare
 
-template<class T> bool ref_compare( T const & a, T const & b, long )
+template<class T> bool ref_compare( T const & a, T const & b )
 {
     return a == b;
 }
 
-template<int I> bool ref_compare( arg<I> const &, arg<I> const &, int )
+template<int I> bool ref_compare( arg<I> const &, arg<I> const & )
 {
     return true;
 }
 
-template<int I> bool ref_compare( arg<I> (*) (), arg<I> (*) (), int )
+template<int I> bool ref_compare( arg<I> (*) (), arg<I> (*) () )
 {
     return true;
 }
 
-template<class T> bool ref_compare( reference_wrapper<T> const & a, reference_wrapper<T> const & b, int )
+template<class T> bool ref_compare( reference_wrapper<T> const & a, reference_wrapper<T> const & b )
 {
     return a.get_pointer() == b.get_pointer();
 }
@@ -74,7 +74,7 @@ template<class T> bool ref_compare( reference_wrapper<T> const & a, reference_wr
 
 template<class R, class F, class L> class bind_t;
 
-template<class R, class F, class L> bool ref_compare( bind_t<R, F, L> const & a, bind_t<R, F, L> const & b, int )
+template<class R, class F, class L> bool ref_compare( bind_t<R, F, L> const & a, bind_t<R, F, L> const & b )
 {
     return a.compare( b );
 }
@@ -102,7 +102,7 @@ private:
 
 // ref_compare for weak_ptr
 
-template<class T> bool ref_compare( value< weak_ptr<T> > const & a, value< weak_ptr<T> > const & b, int )
+template<class T> bool ref_compare( value< weak_ptr<T> > const & a, value< weak_ptr<T> > const & b )
 {
     return !(a.get() < b.get()) && !(b.get() < a.get());
 }
@@ -237,7 +237,7 @@ public:
 
     bool operator==(list1 const & rhs) const
     {
-        return ref_compare(base_type::a1_, rhs.a1_, 0);
+        return ref_compare(base_type::a1_, rhs.a1_);
     }
 };
 
@@ -317,7 +317,7 @@ public:
 
     bool operator==(list2 const & rhs) const
     {
-        return ref_compare(base_type::a1_, rhs.a1_, 0) && ref_compare(base_type::a2_, rhs.a2_, 0);
+        return ref_compare(base_type::a1_, rhs.a1_) && ref_compare(base_type::a2_, rhs.a2_);
     }
 };
 
@@ -378,9 +378,9 @@ public:
     {
         return
             
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ );
     }
 };
 
@@ -443,10 +443,10 @@ public:
     {
         return
 
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 ) &&
-            ref_compare( base_type::a4_, rhs.a4_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ ) &&
+            ref_compare( base_type::a4_, rhs.a4_ );
     }
 };
 
@@ -511,11 +511,11 @@ public:
     {
         return
 
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 ) &&
-            ref_compare( base_type::a4_, rhs.a4_, 0 ) &&
-            ref_compare( base_type::a5_, rhs.a5_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ ) &&
+            ref_compare( base_type::a4_, rhs.a4_ ) &&
+            ref_compare( base_type::a5_, rhs.a5_ );
     }
 };
 
@@ -582,12 +582,12 @@ public:
     {
         return
 
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 ) &&
-            ref_compare( base_type::a4_, rhs.a4_, 0 ) &&
-            ref_compare( base_type::a5_, rhs.a5_, 0 ) &&
-            ref_compare( base_type::a6_, rhs.a6_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ ) &&
+            ref_compare( base_type::a4_, rhs.a4_ ) &&
+            ref_compare( base_type::a5_, rhs.a5_ ) &&
+            ref_compare( base_type::a6_, rhs.a6_ );
     }
 };
 
@@ -656,13 +656,13 @@ public:
     {
         return
 
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 ) &&
-            ref_compare( base_type::a4_, rhs.a4_, 0 ) &&
-            ref_compare( base_type::a5_, rhs.a5_, 0 ) &&
-            ref_compare( base_type::a6_, rhs.a6_, 0 ) &&
-            ref_compare( base_type::a7_, rhs.a7_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ ) &&
+            ref_compare( base_type::a4_, rhs.a4_ ) &&
+            ref_compare( base_type::a5_, rhs.a5_ ) &&
+            ref_compare( base_type::a6_, rhs.a6_ ) &&
+            ref_compare( base_type::a7_, rhs.a7_ );
     }
 };
 
@@ -733,14 +733,14 @@ public:
     {
         return
             
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 ) &&
-            ref_compare( base_type::a4_, rhs.a4_, 0 ) &&
-            ref_compare( base_type::a5_, rhs.a5_, 0 ) &&
-            ref_compare( base_type::a6_, rhs.a6_, 0 ) &&
-            ref_compare( base_type::a7_, rhs.a7_, 0 ) &&
-            ref_compare( base_type::a8_, rhs.a8_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ ) &&
+            ref_compare( base_type::a4_, rhs.a4_ ) &&
+            ref_compare( base_type::a5_, rhs.a5_ ) &&
+            ref_compare( base_type::a6_, rhs.a6_ ) &&
+            ref_compare( base_type::a7_, rhs.a7_ ) &&
+            ref_compare( base_type::a8_, rhs.a8_ );
     }
 };
 
@@ -813,15 +813,15 @@ public:
     {
         return
 
-            ref_compare( base_type::a1_, rhs.a1_, 0 ) &&
-            ref_compare( base_type::a2_, rhs.a2_, 0 ) &&
-            ref_compare( base_type::a3_, rhs.a3_, 0 ) &&
-            ref_compare( base_type::a4_, rhs.a4_, 0 ) &&
-            ref_compare( base_type::a5_, rhs.a5_, 0 ) &&
-            ref_compare( base_type::a6_, rhs.a6_, 0 ) &&
-            ref_compare( base_type::a7_, rhs.a7_, 0 ) &&
-            ref_compare( base_type::a8_, rhs.a8_, 0 ) &&
-            ref_compare( base_type::a9_, rhs.a9_, 0 );
+            ref_compare( base_type::a1_, rhs.a1_ ) &&
+            ref_compare( base_type::a2_, rhs.a2_ ) &&
+            ref_compare( base_type::a3_, rhs.a3_ ) &&
+            ref_compare( base_type::a4_, rhs.a4_ ) &&
+            ref_compare( base_type::a5_, rhs.a5_ ) &&
+            ref_compare( base_type::a6_, rhs.a6_ ) &&
+            ref_compare( base_type::a7_, rhs.a7_ ) &&
+            ref_compare( base_type::a8_, rhs.a8_ ) &&
+            ref_compare( base_type::a9_, rhs.a9_ );
     }
 };
 
@@ -1393,7 +1393,7 @@ public:
 
     bool compare( this_type const & rhs ) const
     {
-        return ref_compare( f_, rhs.f_, 0 ) && l_ == rhs.l_;
+        return ref_compare( f_, rhs.f_ ) && l_ == rhs.l_;
     }
 };
 

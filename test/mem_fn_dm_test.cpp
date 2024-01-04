@@ -18,6 +18,7 @@
 //
 
 #include <boost/mem_fn.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/core/ref.hpp>
 #include <boost/core/lightweight_test.hpp>
 
@@ -58,6 +59,15 @@ int main()
 
     // boost::mem_fn( &X::m )( boost::ref( x ) ) = 704;
     // BOOST_TEST_EQ( x.m, 704 );
+
+    boost::shared_ptr<X> sp( new X() );
+    boost::shared_ptr<X const> csp( sp );
+
+    BOOST_TEST_EQ( boost::mem_fn( &X::m )( sp ), 0 );
+    BOOST_TEST_EQ( boost::mem_fn( &X::m )( csp ), 0 );
+
+    // boost::mem_fn( &X::m )( sp ) = 805;
+    // BOOST_TEST_EQ( x.m, 805 );
 
     return boost::report_errors();
 }

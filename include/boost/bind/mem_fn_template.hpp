@@ -22,53 +22,46 @@ public:
 
 private:
     
-    typedef R (BOOST_MEM_FN_CC T::*F) (A...);
-    F f_;
-
-    template<class U, class... B> R call(U & u, T const *, B&... b) const
-    {
-        return (u.*f_)(b...);
-    }
-
-    template<class U, class... B> R call(U & u, void const *, B&... b) const
-    {
-        return (get_pointer(u)->*f_)(b...);
-    }
+    typedef R (BOOST_MEM_FN_CC T::*Pm) (A...);
+    Pm pm_;
 
 public:
     
-    explicit BOOST_MEM_FN_NAME(mf)(F f): f_(f) {}
+    explicit BOOST_MEM_FN_NAME(mf)( Pm pm ): pm_( pm ) {}
 
-    R operator()(T * p, A... a) const
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class En = typename std::enable_if<
+            std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value
+        >::type
+    >
+
+    R operator()( U&& u, A... a ) const
     {
-        return (p->*f_)(a...);
+        return (std::forward<U>( u ).*pm_)( std::forward<A>( a )... );
     }
 
-    template<class U> R operator()(U & u, A... a) const
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class E1 = void,
+        class En = typename std::enable_if<
+            !(std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value)
+        >::type
+    >
+
+    R operator()( U&& u, A... a ) const
     {
-        U const * p = 0;
-        return call(u, p, a...);
+        return (get_pointer( std::forward<U>( u ) )->*pm_)( std::forward<A>( a )... );
     }
 
-    template<class U> R operator()(U const & u, A... a) const
+    bool operator==( BOOST_MEM_FN_NAME(mf) const & rhs ) const
     {
-        U const * p = 0;
-        return call(u, p, a...);
+        return pm_ == rhs.pm_;
     }
 
-    R operator()(T & t, A... a) const
+    bool operator!=( BOOST_MEM_FN_NAME(mf) const & rhs ) const
     {
-        return (t.*f_)(a...);
-    }
-
-    bool operator==(BOOST_MEM_FN_NAME(mf) const & rhs) const
-    {
-        return f_ == rhs.f_;
-    }
-
-    bool operator!=(BOOST_MEM_FN_NAME(mf) const & rhs) const
-    {
-        return f_ != rhs.f_;
+        return pm_ != rhs.pm_;
     }
 };
 
@@ -82,46 +75,45 @@ public:
 
 private:
     
-    typedef R (BOOST_MEM_FN_CC T::*F) (A...) const;
-    F f_;
-
-    template<class U, class... B> R call(U & u, T const *, B&... b) const
-    {
-        return (u.*f_)(b...);
-    }
-
-    template<class U, class... B> R call(U & u, void const *, B&... b) const
-    {
-        return (get_pointer(u)->*f_)(b...);
-    }
+    typedef R (BOOST_MEM_FN_CC T::*Pm) (A...) const;
+    Pm pm_;
 
 public:
     
-    explicit BOOST_MEM_FN_NAME(cmf)(F f): f_(f) {}
+    explicit BOOST_MEM_FN_NAME(cmf)( Pm pm ): pm_( pm ) {}
 
-    R operator()(T const * p, A... a) const
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class En = typename std::enable_if<
+            std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value
+        >::type
+    >
+
+    R operator()( U&& u, A... a ) const
     {
-        return (p->*f_)(a...);
+        return (std::forward<U>( u ).*pm_)( std::forward<A>( a )... );
     }
 
-    template<class U> R operator()(U const & u, A... a) const
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class E1 = void,
+        class En = typename std::enable_if<
+            !(std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value)
+        >::type
+    >
+
+    R operator()( U&& u, A... a ) const
     {
-        U const * p = 0;
-        return call(u, p, a...);
+        return (get_pointer( std::forward<U>( u ) )->*pm_)( std::forward<A>( a )... );
     }
 
-    R operator()(T const & t, A... a) const
+    bool operator==( BOOST_MEM_FN_NAME(cmf) const & rhs ) const
     {
-        return (t.*f_)(a...);
+        return pm_ == rhs.pm_;
     }
 
-    bool operator==(BOOST_MEM_FN_NAME(cmf) const & rhs) const
+    bool operator!=( BOOST_MEM_FN_NAME(cmf) const & rhs ) const
     {
-        return f_ == rhs.f_;
-    }
-
-    bool operator!=(BOOST_MEM_FN_NAME(cmf) const & rhs) const
-    {
-        return f_ != rhs.f_;
+        return pm_ != rhs.pm_;
     }
 };

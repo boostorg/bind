@@ -8,17 +8,16 @@
 #endif
 
 //
-//  mem_fn.hpp - a generalization of std::mem_fun[_ref]
+// mem_fn.hpp - a generalization of std::mem_fun[_ref]
 //
-//  Copyright (c) 2001, 2002 Peter Dimov and Multi Media Ltd.
-//  Copyright (c) 2001 David Abrahams
-//  Copyright (c) 2003-2005 Peter Dimov
+// Copyright 2001-2005, 2024 Peter Dimov
+// Copyright 2001 David Abrahams
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
-//  See http://www.boost.org/libs/bind/mem_fn.html for documentation.
+// See http://www.boost.org/libs/bind/mem_fn.html for documentation.
 //
 
 #include <boost/get_pointer.hpp>
@@ -36,54 +35,55 @@ template<class T> struct remove_cvref: std::remove_cv< typename std::remove_refe
 {
 };
 
-} // namespace _mfi
-
-namespace _mfi
+template<class Pm, class R, class T, class... A> class mf
 {
+public:
 
-#define BOOST_MEM_FN_NAME(X) X
-#define BOOST_MEM_FN_CC
+    typedef R result_type;
 
-#include <boost/bind/mem_fn_template.hpp>
+private:
 
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NAME
+    Pm pm_;
 
-#if defined(BOOST_MEM_FN_ENABLE_CDECL) && !defined(_M_X64)
+public:
 
-#define BOOST_MEM_FN_NAME(X) X##_cdecl
-#define BOOST_MEM_FN_CC __cdecl
+    mf( Pm pm ): pm_( pm ) {}
 
-#include <boost/bind/mem_fn_template.hpp>
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class En = typename std::enable_if<
+            std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value
+        >::type
+    >
 
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NAME
+    R operator()( U&& u, A... a ) const
+    {
+        return (std::forward<U>( u ).*pm_)( std::forward<A>( a )... );
+    }
 
-#endif
+    template<class U,
+        class Ud = typename _mfi::remove_cvref<U>::type,
+        class E1 = void,
+        class En = typename std::enable_if<
+            !(std::is_same<T, Ud>::value || std::is_base_of<T, Ud>::value)
+        >::type
+    >
 
-#if defined(BOOST_MEM_FN_ENABLE_STDCALL) && !defined(_M_X64)
+    R operator()( U&& u, A... a ) const
+    {
+        return (get_pointer( std::forward<U>( u ) )->*pm_)( std::forward<A>( a )... );
+    }
 
-#define BOOST_MEM_FN_NAME(X) X##_stdcall
-#define BOOST_MEM_FN_CC __stdcall
+    bool operator==( mf const & rhs ) const
+    {
+        return pm_ == rhs.pm_;
+    }
 
-#include <boost/bind/mem_fn_template.hpp>
-
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NAME
-
-#endif
-
-#if defined(BOOST_MEM_FN_ENABLE_FASTCALL) && !defined(_M_X64)
-
-#define BOOST_MEM_FN_NAME(X) X##_fastcall
-#define BOOST_MEM_FN_CC __fastcall
-
-#include <boost/bind/mem_fn_template.hpp>
-
-#undef BOOST_MEM_FN_CC
-#undef BOOST_MEM_FN_NAME
-
-#endif
+    bool operator!=( mf const & rhs ) const
+    {
+        return pm_ != rhs.pm_;
+    }
+};
 
 } // namespace _mfi
 
@@ -160,13 +160,13 @@ public:
     typedef T const * argument_type;
 
 private:
-    
+
     typedef R (T::*Pm);
     Pm pm_;
 
 public:
 
-    explicit dm( Pm pm ): pm_( pm ) {}
+    dm( Pm pm ): pm_( pm ) {}
 
     template<class U,
         class Ud = typename _mfi::remove_cvref<U>::type,
@@ -222,9 +222,12 @@ public:
 
 } // namespace _mfi
 
-template<class R, class T> _mfi::dm<R, T> mem_fn(R T::*f)
+template<class R, class T,
+    class E = typename std::enable_if< !std::is_function<R>::value >::type
+>
+_mfi::dm<R, T> mem_fn( R T::*pm )
 {
-    return _mfi::dm<R, T>(f);
+    return pm;
 }
 
 } // namespace boost

@@ -12,12 +12,16 @@
 // See http://www.boost.org/libs/bind/mem_fn.html for documentation.
 //
 
-template<class R, class T, class... A> _mfi::BOOST_MEM_FN_NAME(mf)<R, T, A...> mem_fn(R (BOOST_MEM_FN_CC T::*f) (A...) BOOST_MEM_FN_NOEXCEPT)
+template<class R, class T, class... A>
+_mfi::mf< R (BOOST_MEM_FN_CC T::*) (A...) BOOST_MEM_FN_NOEXCEPT, R, T, A... >
+mem_fn( R (BOOST_MEM_FN_CC T::*pmf) (A...) BOOST_MEM_FN_NOEXCEPT )
 {
-    return _mfi::BOOST_MEM_FN_NAME(mf)<R, T, A...>(f);
+    return pmf;
 }
 
-template<class R, class T, class... A> _mfi::BOOST_MEM_FN_NAME(cmf)<R, T, A...> mem_fn(R (BOOST_MEM_FN_CC T::*f) (A...) const BOOST_MEM_FN_NOEXCEPT)
+template<class R, class T, class... A>
+_mfi::mf< R (BOOST_MEM_FN_CC T::*) (A...) const BOOST_MEM_FN_NOEXCEPT, R, T, A... >
+mem_fn( R (BOOST_MEM_FN_CC T::*pmf) (A...) const BOOST_MEM_FN_NOEXCEPT )
 {
-    return _mfi::BOOST_MEM_FN_NAME(cmf)<R, T, A...>(f);
+    return pmf;
 }

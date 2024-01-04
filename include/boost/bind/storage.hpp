@@ -21,9 +21,8 @@
 //  See http://www.boost.org/libs/bind/bind.html for documentation.
 //
 
-#include <boost/bind/detail/requires_cxx11.hpp>
-#include <boost/config.hpp>
 #include <boost/bind/arg.hpp>
+#include <boost/config.hpp>
 
 #ifdef BOOST_MSVC
 # pragma warning(push)
@@ -44,7 +43,7 @@ template<class A1> struct storage1
 
     template<class V> void accept(V & v) const
     {
-        BOOST_BIND_VISIT_EACH(v, a1_, 0);
+        visit_each(v, a1_, 0);
     }
 
     A1 a1_;
@@ -83,7 +82,7 @@ template<class A1, class A2> struct storage2: public storage1<A1>
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a2_, 0);
+        visit_each(v, a2_, 0);
     }
 
     A2 a2_;
@@ -132,7 +131,7 @@ template<class A1, class A2, class A3> struct storage3: public storage2< A1, A2 
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a3_, 0);
+        visit_each(v, a3_, 0);
     }
 
     A3 a3_;
@@ -181,7 +180,7 @@ template<class A1, class A2, class A3, class A4> struct storage4: public storage
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a4_, 0);
+        visit_each(v, a4_, 0);
     }
 
     A4 a4_;
@@ -230,7 +229,7 @@ template<class A1, class A2, class A3, class A4, class A5> struct storage5: publ
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a5_, 0);
+        visit_each(v, a5_, 0);
     }
 
     A5 a5_;
@@ -279,7 +278,7 @@ template<class A1, class A2, class A3, class A4, class A5, class A6> struct stor
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a6_, 0);
+        visit_each(v, a6_, 0);
     }
 
     A6 a6_;
@@ -328,7 +327,7 @@ template<class A1, class A2, class A3, class A4, class A5, class A6, class A7> s
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a7_, 0);
+        visit_each(v, a7_, 0);
     }
 
     A7 a7_;
@@ -377,7 +376,7 @@ template<class A1, class A2, class A3, class A4, class A5, class A6, class A7, c
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a8_, 0);
+        visit_each(v, a8_, 0);
     }
 
     A8 a8_;
@@ -426,7 +425,7 @@ template<class A1, class A2, class A3, class A4, class A5, class A6, class A7, c
     template<class V> void accept(V & v) const
     {
         inherited::accept(v);
-        BOOST_BIND_VISIT_EACH(v, a9_, 0);
+        visit_each(v, a9_, 0);
     }
 
     A9 a9_;

@@ -8,44 +8,30 @@
 #endif
 
 //
-//  bind.hpp - binds function objects to arguments
+// bind.hpp - binds function objects to arguments
 //
-//  Copyright (c) 2001-2004 Peter Dimov and Multi Media Ltd.
-//  Copyright (c) 2001 David Abrahams
-//  Copyright (c) 2005 Peter Dimov
+// Copyright 2001-2005, 2024 Peter Dimov
+// Copyright 2001 David Abrahams
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
-//  See http://www.boost.org/libs/bind/bind.html for documentation.
+//  See http://www.boost.org/libs/bind for documentation.
 //
 
-#include <boost/bind/detail/requires_cxx11.hpp>
-#include <boost/config.hpp>
-#include <boost/bind/mem_fn.hpp>
-#include <boost/type.hpp>
-#include <boost/is_placeholder.hpp>
-#include <boost/bind/arg.hpp>
 #include <boost/bind/detail/result_traits.hpp>
+#include <boost/bind/mem_fn.hpp>
+#include <boost/bind/arg.hpp>
 #include <boost/bind/std_placeholders.hpp>
-#include <boost/config/workaround.hpp>
 #include <boost/visit_each.hpp>
+#include <boost/is_placeholder.hpp>
+#include <boost/type.hpp>
 #include <boost/core/ref.hpp>
-#include <boost/core/enable_if.hpp>
-#include <boost/bind/detail/is_same.hpp>
-
-#if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
+#include <boost/config.hpp>
+#include <boost/config/workaround.hpp>
 #include <utility> // std::forward
-#endif
-
-// Borland-specific bug, visit_each() silently fails to produce code
-
-#if defined(BOOST_BORLANDC)
-#  define BOOST_BIND_VISIT_EACH boost::visit_each
-#else
-#  define BOOST_BIND_VISIT_EACH visit_each
-#endif
+#include <type_traits>
 
 #include <boost/bind/storage.hpp>
 
@@ -845,8 +831,6 @@ public:
 
 // bind_t
 
-#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !(defined(BOOST_GCC) && BOOST_GCC < 40600)
-
 template< class A1 > class rrlist1
 {
 private:
@@ -1402,11 +1386,8 @@ public:
 
     template<class V> void accept( V & v ) const
     {
-#if !defined( BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP ) && !defined( BOOST_BORLANDC )
         using boost::visit_each;
-#endif
-
-        BOOST_BIND_VISIT_EACH( v, f_, 0 );
+        visit_each( v, f_, 0 );
         l_.accept( v );
     }
 
@@ -1416,83 +1397,14 @@ public:
     }
 };
 
-#else
-
-template<class R, class F, class L> class bind_t
-{
-public:
-
-    typedef bind_t this_type;
-
-    bind_t(F f, L const & l): f_(f), l_(l) {}
-
-#include <boost/bind/bind_template.hpp>
-
-};
-
-#endif
-
 // function_equal
-
-#ifndef BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-
-// put overloads in _bi, rely on ADL
-
-# ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
 
 template<class R, class F, class L> bool function_equal( bind_t<R, F, L> const & a, bind_t<R, F, L> const & b )
 {
     return a.compare(b);
 }
 
-# else
-
-template<class R, class F, class L> bool function_equal_impl( bind_t<R, F, L> const & a, bind_t<R, F, L> const & b, int )
-{
-    return a.compare(b);
-}
-
-# endif // #ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-
-#else // BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-
-// put overloads in boost
-
-} // namespace _bi
-
-# ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-
-template<class R, class F, class L> bool function_equal( _bi::bind_t<R, F, L> const & a, _bi::bind_t<R, F, L> const & b )
-{
-    return a.compare(b);
-}
-
-# else
-
-template<class R, class F, class L> bool function_equal_impl( _bi::bind_t<R, F, L> const & a, _bi::bind_t<R, F, L> const & b, int )
-{
-    return a.compare(b);
-}
-
-# endif // #ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
-
-namespace _bi
-{
-
-#endif // BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
-
 // add_value
-
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) || (__SUNPRO_CC >= 0x530)
-
-#if defined( BOOST_BORLANDC ) && BOOST_WORKAROUND( BOOST_BORLANDC, BOOST_TESTED_AT(0x582) )
-
-template<class T> struct add_value
-{
-    typedef _bi::value<T> type;
-};
-
-#else
 
 template< class T, int I > struct add_value_2
 {
@@ -1508,8 +1420,6 @@ template<class T> struct add_value
 {
     typedef typename add_value_2< T, boost::is_placeholder< T >::value >::type type;
 };
-
-#endif
 
 template<class T> struct add_value< value<T> >
 {
@@ -1535,45 +1445,6 @@ template<class R, class F, class L> struct add_value< bind_t<R, F, L> >
 {
     typedef bind_t<R, F, L> type;
 };
-
-#else
-
-template<int I> struct _avt_0;
-
-template<> struct _avt_0<1>
-{
-    template<class T> struct inner
-    {
-        typedef T type;
-    };
-};
-
-template<> struct _avt_0<2>
-{
-    template<class T> struct inner
-    {
-        typedef value<T> type;
-    };
-};
-
-typedef char (&_avt_r1) [1];
-typedef char (&_avt_r2) [2];
-
-template<class T> _avt_r1 _avt_f(value<T>);
-template<class T> _avt_r1 _avt_f(reference_wrapper<T>);
-template<int I> _avt_r1 _avt_f(arg<I>);
-template<int I> _avt_r1 _avt_f(arg<I> (*) ());
-template<class R, class F, class L> _avt_r1 _avt_f(bind_t<R, F, L>);
-
-_avt_r2 _avt_f(...);
-
-template<class T> struct add_value
-{
-    static T t();
-    typedef typename _avt_0<sizeof(_avt_f(t()))>::template inner<T>::type type;
-};
-
-#endif
 
 // list_av_N
 
@@ -1714,36 +1585,12 @@ BOOST_BIND_OPERATOR( ||, logical_or )
 
 #undef BOOST_BIND_OPERATOR
 
-#if defined(__GNUC__) && BOOST_WORKAROUND(__GNUC__, < 3)
-
-// resolve ambiguity with rel_ops
-
-#define BOOST_BIND_OPERATOR( op, name ) \
-\
-template<class R, class F, class L> \
-    bind_t< bool, name, list2< bind_t<R, F, L>, bind_t<R, F, L> > > \
-    operator op (bind_t<R, F, L> const & f, bind_t<R, F, L> const & g) \
-{ \
-    typedef list2< bind_t<R, F, L>, bind_t<R, F, L> > list_type; \
-    return bind_t<bool, name, list_type> ( name(), list_type(f, g) ); \
-}
-
-BOOST_BIND_OPERATOR( !=, not_equal )
-BOOST_BIND_OPERATOR( <=, less_equal )
-BOOST_BIND_OPERATOR( >, greater )
-BOOST_BIND_OPERATOR( >=, greater_equal )
-
-#endif
-
-// visit_each, ADL
-
-#if !defined( BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP ) && !defined( BOOST_BORLANDC ) \
-   && !(defined(__GNUC__) && __GNUC__ == 3 && __GNUC_MINOR__ <= 3)
+// visit_each
 
 template<class V, class T> void visit_each( V & v, value<T> const & t, int )
 {
     using boost::visit_each;
-    BOOST_BIND_VISIT_EACH( v, t.get(), 0 );
+    visit_each( v, t.get(), 0 );
 }
 
 template<class V, class R, class F, class L> void visit_each( V & v, bind_t<R, F, L> const & t, int )
@@ -1751,26 +1598,7 @@ template<class V, class R, class F, class L> void visit_each( V & v, bind_t<R, F
     t.accept( v );
 }
 
-#endif
-
 } // namespace _bi
-
-// visit_each, no ADL
-
-#if defined( BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP ) || defined( BOOST_BORLANDC ) \
-  || (defined(__GNUC__) && __GNUC__ == 3 && __GNUC_MINOR__ <= 3)
-
-template<class V, class T> void visit_each( V & v, _bi::value<T> const & t, int )
-{
-    BOOST_BIND_VISIT_EACH( v, t.get(), 0 );
-}
-
-template<class V, class R, class F, class L> void visit_each( V & v, _bi::bind_t<R, F, L> const & t, int )
-{
-    t.accept( v );
-}
-
-#endif
 
 // is_bind_expression
 
@@ -1779,14 +1607,10 @@ template< class T > struct is_bind_expression
     enum _vt { value = 0 };
 };
 
-#if !defined( BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION )
-
 template< class R, class F, class L > struct is_bind_expression< _bi::bind_t< R, F, L > >
 {
     enum _vt { value = 1 };
 };
-
-#endif
 
 // bind
 
@@ -1958,8 +1782,6 @@ template<class R, class F, class A1, class A2, class A3, class A4, class A5, cla
     return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8, a9));
 }
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING)
-
 // adaptable function objects
 
 template<class F>
@@ -2041,8 +1863,6 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
     typedef typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type list_type;
     return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8, a9));
 }
-
-#endif // !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING)
 
 // function pointers
 
@@ -2171,20 +1991,6 @@ template<class F, class A1, class A2, class A3, class A4, class A5, class A6, cl
 
 // data member pointers
 
-#if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) || defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) \
-    || ( defined(BOOST_BORLANDC) && BOOST_WORKAROUND( BOOST_BORLANDC, BOOST_TESTED_AT( 0x620 ) ) )
-
-template<class R, class T, class A1>
-_bi::bind_t< R, _mfi::dm<R, T>, typename _bi::list_av_1<A1>::type >
-    BOOST_BIND(R T::*f, A1 a1)
-{
-    typedef _mfi::dm<R, T> F;
-    typedef typename _bi::list_av_1<A1>::type list_type;
-    return _bi::bind_t<R, F, list_type>( F(f), list_type(a1) );
-}
-
-#else
-
 namespace _bi
 {
 
@@ -2212,8 +2018,6 @@ template< class R, class T > struct add_cref< R (T::*) (), 1 >
     typedef void type;
 };
 
-#if !defined(__IBMCPP__) || __IBMCPP_FUNC_CV_TMPL_ARG_DEDUCTION
-
 template< class R, class T > struct add_cref< R (T::*) () const, 1 >
 {
     typedef void type;
@@ -2227,8 +2031,6 @@ template< class R, class T > struct add_cref< R (T::*) () const noexcept, 1 >
 };
 
 #endif // __cpp_noexcept_function_type
-
-#endif // __IBMCPP__
 
 template<class R> struct isref
 {
@@ -2273,8 +2075,6 @@ BOOST_BIND( M T::*f, A1 a1 )
     typedef typename _bi::list_av_1<A1>::type list_type;
     return _bi::bind_t< result_type, F, list_type >( F( f ), list_type( a1 ) );
 }
-
-#endif
 
 } // namespace boost
 

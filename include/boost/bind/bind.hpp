@@ -485,6 +485,8 @@ template< class R, class F, class L > struct is_bind_expression< _bi::bind_t< R,
 
 // generic function objects
 
+#if !BOOST_WORKAROUND(__GNUC__, < 5)
+
 template<class R, class F, class... A>
     _bi::bind_t<R, F, typename _bi::list_av<A...>::type>
     BOOST_BIND( F f, A... a )
@@ -492,6 +494,92 @@ template<class R, class F, class... A>
     typedef typename _bi::list_av<A...>::type list_type;
     return _bi::bind_t<R, F, list_type>( f, list_type( a... ) );
 }
+
+#else
+
+// g++ 4.x considers boost::bind<void>( &X::f ) ambiguous w/ the above
+
+template<class R, class F>
+    _bi::bind_t<R, F, typename _bi::list_av<>::type>
+    BOOST_BIND( F f )
+{
+    typedef typename _bi::list_av<>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type() );
+}
+
+template<class R, class F, class A1>
+    _bi::bind_t<R, F, typename _bi::list_av<A1>::type>
+    BOOST_BIND( F f, A1 a1 )
+{
+    typedef typename _bi::list_av<A1>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1 ) );
+}
+
+template<class R, class F, class A1, class A2>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2 )
+{
+    typedef typename _bi::list_av<A1, A2>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3 )
+{
+    typedef typename _bi::list_av<A1, A2, A3>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3, class A4>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3, A4>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    typedef typename _bi::list_av<A1, A2, A3, A4>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3, class A4, class A5>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3, A4, A5>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    typedef typename _bi::list_av<A1, A2, A3, A4, A5>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3, A4, A5, A6>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6 )
+{
+    typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7 )
+{
+    typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6, a7 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7, A8>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8 )
+{
+    typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7, A8>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6, a7, a8 ) );
+}
+
+template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
+    _bi::bind_t<R, F, typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type>
+    BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9 )
+{
+    typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6, a7, a8, a9 ) );
+}
+
+#endif
 
 // generic function objects, alternative syntax
 

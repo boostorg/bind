@@ -20,17 +20,16 @@
 //  See http://www.boost.org/libs/bind for documentation.
 //
 
-#include <boost/bind/detail/result_traits.hpp>
 #include <boost/bind/mem_fn.hpp>
 #include <boost/bind/arg.hpp>
 #include <boost/bind/std_placeholders.hpp>
+#include <boost/bind/detail/result_traits.hpp>
+#include <boost/bind/detail/tuple_for_each.hpp>
+#include <boost/bind/detail/integer_sequence.hpp>
 #include <boost/visit_each.hpp>
 #include <boost/is_placeholder.hpp>
 #include <boost/type.hpp>
 #include <boost/core/ref.hpp>
-#include <boost/mp11/integer_sequence.hpp>
-#include <boost/mp11/algorithm.hpp>
-#include <boost/mp11/tuple.hpp>
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 #include <utility>
@@ -147,18 +146,15 @@ template<class V> struct accept_lambda
     }
 };
 
-template<class Tp> struct equal_lambda
+struct equal_lambda
 {
-    Tp const& tp1_;
-    Tp const& tp2_;
-
     bool result;
 
-    explicit equal_lambda( Tp const& tp1, Tp const& tp2 ): tp1_( tp1 ), tp2_( tp2 ), result( true ) {}
+    equal_lambda(): result( true ) {}
 
-    template<class I> void operator()( I )
+    template<class A1, class A2> void operator()( A1& a1, A2& a2 )
     {
-        result = result && ref_compare( std::get<I::value>( tp1_ ), std::get<I::value>( tp2_ ) );
+        result = result && ref_compare( a1, a2 );
     }
 };
 
@@ -176,22 +172,22 @@ public:
 
     list( A... a ): data_( a... ) {}
 
-    template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, mp11::index_sequence<I...> )
+    template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, _bi::index_sequence<I...> )
     {
         return unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, mp11::index_sequence<I...> ) const
+    template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, _bi::index_sequence<I...> ) const
     {
         return unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class F, class A2, std::size_t... I> void call_impl( type<void>, F & f, A2 & a2, mp11::index_sequence<I...> )
+    template<class F, class A2, std::size_t... I> void call_impl( type<void>, F & f, A2 & a2, _bi::index_sequence<I...> )
     {
         unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class F, class A2, std::size_t... I> void call_impl( type<void>, F & f, A2 & a2, mp11::index_sequence<I...> ) const
+    template<class F, class A2, std::size_t... I> void call_impl( type<void>, F & f, A2 & a2, _bi::index_sequence<I...> ) const
     {
         unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
@@ -200,12 +196,12 @@ public:
 
     template<class R, class F, class A2> R operator()( type<R>, F & f, A2 & a2 )
     {
-        return call_impl( type<R>(), f, a2, mp11::index_sequence_for<A...>() );
+        return call_impl( type<R>(), f, a2, _bi::index_sequence_for<A...>() );
     }
 
     template<class R, class F, class A2> R operator()( type<R>, F & f, A2 & a2 ) const
     {
-        return call_impl( type<R>(), f, a2, mp11::index_sequence_for<A...>() );
+        return call_impl( type<R>(), f, a2, _bi::index_sequence_for<A...>() );
     }
 
     //
@@ -238,12 +234,12 @@ public:
 
     template<class V> void accept( V & v ) const
     {
-        mp11::tuple_for_each( data_, accept_lambda<V>( v ) );
+        _bi::tuple_for_each( accept_lambda<V>( v ), data_ );
     }
 
     bool operator==( list const & rhs ) const
     {
-        return mp11::mp_for_each< mp11::mp_iota_c< sizeof...(A) > >( equal_lambda<data_type>( data_, rhs.data_ ) ).result;
+        return _bi::tuple_for_each( equal_lambda(), data_, rhs.data_ ).result;
     }
 };
 

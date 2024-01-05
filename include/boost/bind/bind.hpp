@@ -28,13 +28,14 @@
 #include <boost/is_placeholder.hpp>
 #include <boost/type.hpp>
 #include <boost/core/ref.hpp>
+#include <boost/mp11/integer_sequence.hpp>
+#include <boost/mp11/algorithm.hpp>
+#include <boost/mp11/tuple.hpp>
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 #include <utility>
 #include <type_traits>
 #include <tuple>
-
-#include <boost/bind/storage.hpp>
 
 #ifdef BOOST_MSVC
 # pragma warning(push)
@@ -132,703 +133,119 @@ template<class F> struct unwrapper
     }
 };
 
-// listN
+// list
 
-class list0
+template<class V> struct accept_lambda
 {
-public:
+    V& v_;
 
-    list0() {}
+    explicit accept_lambda( V& v ): v_( v ) {}
 
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A &, long)
+    template<class A> void operator()( A& a ) const
     {
-        return unwrapper<F>::unwrap(f, 0)();
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A &, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)();
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A &, int)
-    {
-        unwrapper<F>::unwrap(f, 0)();
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A &, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)();
-    }
-
-    template<class V> void accept(V &) const
-    {
-    }
-
-    bool operator==(list0 const &) const
-    {
-        return true;
+        visit_each( v_, a, 0 );
     }
 };
 
-#ifdef BOOST_MSVC
-// MSVC is bright enough to realise that the parameter rhs 
-// in operator==may be unused for some template argument types:
-#pragma warning(push)
-#pragma warning(disable:4100)
-#endif
-
-template< class A1 > class list1: private storage1< A1 >
+template<class Tp> struct equal_lambda
 {
-private:
+    Tp const& tp1_;
+    Tp const& tp2_;
 
-    typedef storage1< A1 > base_type;
+    bool result;
 
-public:
+    explicit equal_lambda( Tp const& tp1, Tp const& tp2 ): tp1_( tp1 ), tp2_( tp2 ), result( true ) {}
 
-    explicit list1( A1 a1 ): base_type( a1 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-
-    template<class T> T & operator[] ( _bi::value<T> & v ) const { return v.get(); }
-
-    template<class T> T const & operator[] ( _bi::value<T> const & v ) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
+    template<class I> void operator()( I )
     {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list1 const & rhs) const
-    {
-        return ref_compare(base_type::a1_, rhs.a1_);
+        result = result && ref_compare( std::get<I::value>( tp1_ ), std::get<I::value>( tp2_ ) );
     }
 };
 
 struct logical_and;
 struct logical_or;
 
-template< class A1, class A2 > class list2: private storage2< A1, A2 >
+template<class... A> class list
 {
 private:
 
-    typedef storage2< A1, A2 > base_type;
+    typedef std::tuple<A...> data_type;
+    data_type data_;
 
 public:
 
-    list2( A1 a1, A2 a2 ): base_type( a1, a2 ) {}
+    list( A... a ): data_( a... ) {}
 
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
+    template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, mp11::index_sequence<I...> )
     {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_]);
+        return unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
+    template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, mp11::index_sequence<I...> ) const
     {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_]);
+        return unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
+    template<class F, class A2, std::size_t... I> void call_impl( type<void>, F & f, A2 & a2, mp11::index_sequence<I...> )
     {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_]);
+        unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
+    template<class F, class A2, std::size_t... I> void call_impl( type<void>, F & f, A2 & a2, mp11::index_sequence<I...> ) const
     {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_]);
+        unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-    template<class A> bool operator()( type<bool>, logical_and & /*f*/, A & a, int )
+    //
+
+    template<class R, class F, class A2> R operator()( type<R>, F & f, A2 & a2 )
     {
-        return a[ base_type::a1_ ] && a[ base_type::a2_ ];
+        return call_impl( type<R>(), f, a2, mp11::index_sequence_for<A...>() );
     }
 
-    template<class A> bool operator()( type<bool>, logical_and const & /*f*/, A & a, int ) const
+    template<class R, class F, class A2> R operator()( type<R>, F & f, A2 & a2 ) const
     {
-        return a[ base_type::a1_ ] && a[ base_type::a2_ ];
+        return call_impl( type<R>(), f, a2, mp11::index_sequence_for<A...>() );
     }
 
-    template<class A> bool operator()( type<bool>, logical_or & /*f*/, A & a, int )
+    //
+
+    template<class A2> bool operator()( type<bool>, logical_and & /*f*/, A2 & a2 )
     {
-        return a[ base_type::a1_ ] || a[ base_type::a2_ ];
+        static_assert( sizeof...(A) == 2, "operator&& must have two arguments" );
+        return a2[ std::get<0>( data_ ) ] && a2[ std::get<1>( data_ ) ];
     }
 
-    template<class A> bool operator()( type<bool>, logical_or const & /*f*/, A & a, int ) const
+    template<class A2> bool operator()( type<bool>, logical_and const & /*f*/, A2 & a2 ) const
     {
-        return a[ base_type::a1_ ] || a[ base_type::a2_ ];
+        static_assert( sizeof...(A) == 2, "operator&& must have two arguments" );
+        return a2[ std::get<0>( data_ ) ] && a2[ std::get<1>( data_ ) ];
     }
 
-    template<class V> void accept(V & v) const
+    template<class A2> bool operator()( type<bool>, logical_or & /*f*/, A2 & a2 )
     {
-        base_type::accept(v);
+        static_assert( sizeof...(A) == 2, "operator|| must have two arguments" );
+        return a2[ std::get<0>( data_ ) ] || a2[ std::get<1>( data_ ) ];
     }
 
-    bool operator==(list2 const & rhs) const
+    template<class A2> bool operator()( type<bool>, logical_or const & /*f*/, A2 & a2 ) const
     {
-        return ref_compare(base_type::a1_, rhs.a1_) && ref_compare(base_type::a2_, rhs.a2_);
-    }
-};
-
-template< class A1, class A2, class A3 > class list3: private storage3< A1, A2, A3 >
-{
-private:
-
-    typedef storage3< A1, A2, A3 > base_type;
-
-public:
-
-    list3( A1 a1, A2 a2, A3 a3 ): base_type( a1, a2, a3 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_]);
+        static_assert( sizeof...(A) == 2, "operator|| must have two arguments" );
+        return a2[ std::get<0>( data_ ) ] || a2[ std::get<1>( data_ ) ];
     }
 
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
+    //
+
+    template<class V> void accept( V & v ) const
     {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_]);
+        mp11::tuple_for_each( data_, accept_lambda<V>( v ) );
     }
 
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
+    bool operator==( list const & rhs ) const
     {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list3 const & rhs) const
-    {
-        return
-            
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ );
+        return mp11::mp_for_each< mp11::mp_iota_c< sizeof...(A) > >( equal_lambda<data_type>( data_, rhs.data_ ) ).result;
     }
 };
-
-template< class A1, class A2, class A3, class A4 > class list4: private storage4< A1, A2, A3, A4 >
-{
-private:
-
-    typedef storage4< A1, A2, A3, A4 > base_type;
-
-public:
-
-    list4( A1 a1, A2 a2, A3 a3, A4 a4 ): base_type( a1, a2, a3, a4 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4>) const { return base_type::a4_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4> (*) ()) const { return base_type::a4_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list4 const & rhs) const
-    {
-        return
-
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ ) &&
-            ref_compare( base_type::a4_, rhs.a4_ );
-    }
-};
-
-template< class A1, class A2, class A3, class A4, class A5 > class list5: private storage5< A1, A2, A3, A4, A5 >
-{
-private:
-
-    typedef storage5< A1, A2, A3, A4, A5 > base_type;
-
-public:
-
-    list5( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ): base_type( a1, a2, a3, a4, a5 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4>) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5>) const { return base_type::a5_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4> (*) ()) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5> (*) ()) const { return base_type::a5_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list5 const & rhs) const
-    {
-        return
-
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ ) &&
-            ref_compare( base_type::a4_, rhs.a4_ ) &&
-            ref_compare( base_type::a5_, rhs.a5_ );
-    }
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6> class list6: private storage6< A1, A2, A3, A4, A5, A6 >
-{
-private:
-
-    typedef storage6< A1, A2, A3, A4, A5, A6 > base_type;
-
-public:
-
-    list6( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6 ): base_type( a1, a2, a3, a4, a5, a6 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4>) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5>) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6>) const { return base_type::a6_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4> (*) ()) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5> (*) ()) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6> (*) ()) const { return base_type::a6_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list6 const & rhs) const
-    {
-        return
-
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ ) &&
-            ref_compare( base_type::a4_, rhs.a4_ ) &&
-            ref_compare( base_type::a5_, rhs.a5_ ) &&
-            ref_compare( base_type::a6_, rhs.a6_ );
-    }
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6, class A7> class list7: private storage7< A1, A2, A3, A4, A5, A6, A7 >
-{
-private:
-
-    typedef storage7< A1, A2, A3, A4, A5, A6, A7 > base_type;
-
-public:
-
-    list7( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7 ): base_type( a1, a2, a3, a4, a5, a6, a7 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4>) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5>) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6>) const { return base_type::a6_; }
-    A7 operator[] (boost::arg<7>) const { return base_type::a7_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4> (*) ()) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5> (*) ()) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6> (*) ()) const { return base_type::a6_; }
-    A7 operator[] (boost::arg<7> (*) ()) const { return base_type::a7_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list7 const & rhs) const
-    {
-        return
-
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ ) &&
-            ref_compare( base_type::a4_, rhs.a4_ ) &&
-            ref_compare( base_type::a5_, rhs.a5_ ) &&
-            ref_compare( base_type::a6_, rhs.a6_ ) &&
-            ref_compare( base_type::a7_, rhs.a7_ );
-    }
-};
-
-template< class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8 > class list8: private storage8< A1, A2, A3, A4, A5, A6, A7, A8 >
-{
-private:
-
-    typedef storage8< A1, A2, A3, A4, A5, A6, A7, A8 > base_type;
-
-public:
-
-    list8( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8 ): base_type( a1, a2, a3, a4, a5, a6, a7, a8 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4>) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5>) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6>) const { return base_type::a6_; }
-    A7 operator[] (boost::arg<7>) const { return base_type::a7_; }
-    A8 operator[] (boost::arg<8>) const { return base_type::a8_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4> (*) ()) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5> (*) ()) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6> (*) ()) const { return base_type::a6_; }
-    A7 operator[] (boost::arg<7> (*) ()) const { return base_type::a7_; }
-    A8 operator[] (boost::arg<8> (*) ()) const { return base_type::a8_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list8 const & rhs) const
-    {
-        return
-            
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ ) &&
-            ref_compare( base_type::a4_, rhs.a4_ ) &&
-            ref_compare( base_type::a5_, rhs.a5_ ) &&
-            ref_compare( base_type::a6_, rhs.a6_ ) &&
-            ref_compare( base_type::a7_, rhs.a7_ ) &&
-            ref_compare( base_type::a8_, rhs.a8_ );
-    }
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9> class list9: private storage9< A1, A2, A3, A4, A5, A6, A7, A8, A9 >
-{
-private:
-
-    typedef storage9< A1, A2, A3, A4, A5, A6, A7, A8, A9 > base_type;
-
-public:
-
-    list9( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9 ): base_type( a1, a2, a3, a4, a5, a6, a7, a8, a9 ) {}
-
-    A1 operator[] (boost::arg<1>) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2>) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3>) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4>) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5>) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6>) const { return base_type::a6_; }
-    A7 operator[] (boost::arg<7>) const { return base_type::a7_; }
-    A8 operator[] (boost::arg<8>) const { return base_type::a8_; }
-    A9 operator[] (boost::arg<9>) const { return base_type::a9_; }
-
-    A1 operator[] (boost::arg<1> (*) ()) const { return base_type::a1_; }
-    A2 operator[] (boost::arg<2> (*) ()) const { return base_type::a2_; }
-    A3 operator[] (boost::arg<3> (*) ()) const { return base_type::a3_; }
-    A4 operator[] (boost::arg<4> (*) ()) const { return base_type::a4_; }
-    A5 operator[] (boost::arg<5> (*) ()) const { return base_type::a5_; }
-    A6 operator[] (boost::arg<6> (*) ()) const { return base_type::a6_; }
-    A7 operator[] (boost::arg<7> (*) ()) const { return base_type::a7_; }
-    A8 operator[] (boost::arg<8> (*) ()) const { return base_type::a8_; }
-    A9 operator[] (boost::arg<9> (*) ()) const { return base_type::a9_; }
-
-    template<class T> T & operator[] (_bi::value<T> & v) const { return v.get(); }
-
-    template<class T> T const & operator[] (_bi::value<T> const & v) const { return v.get(); }
-
-    template<class T> T & operator[] (reference_wrapper<T> const & v) const { return v.get(); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> & b) const { return b.eval(*this); }
-
-    template<class R, class F, class L> typename result_traits<R, F>::type operator[] (bind_t<R, F, L> const & b) const { return b.eval(*this); }
-
-    template<class R, class F, class A> R operator()(type<R>, F & f, A & a, long)
-    {
-        return unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_], a[base_type::a9_]);
-    }
-
-    template<class R, class F, class A> R operator()(type<R>, F const & f, A & a, long) const
-    {
-        return unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_], a[base_type::a9_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F & f, A & a, int)
-    {
-        unwrapper<F>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_], a[base_type::a9_]);
-    }
-
-    template<class F, class A> void operator()(type<void>, F const & f, A & a, int) const
-    {
-        unwrapper<F const>::unwrap(f, 0)(a[base_type::a1_], a[base_type::a2_], a[base_type::a3_], a[base_type::a4_], a[base_type::a5_], a[base_type::a6_], a[base_type::a7_], a[base_type::a8_], a[base_type::a9_]);
-    }
-
-    template<class V> void accept(V & v) const
-    {
-        base_type::accept(v);
-    }
-
-    bool operator==(list9 const & rhs) const
-    {
-        return
-
-            ref_compare( base_type::a1_, rhs.a1_ ) &&
-            ref_compare( base_type::a2_, rhs.a2_ ) &&
-            ref_compare( base_type::a3_, rhs.a3_ ) &&
-            ref_compare( base_type::a4_, rhs.a4_ ) &&
-            ref_compare( base_type::a5_, rhs.a5_ ) &&
-            ref_compare( base_type::a6_, rhs.a6_ ) &&
-            ref_compare( base_type::a7_, rhs.a7_ ) &&
-            ref_compare( base_type::a8_, rhs.a8_ ) &&
-            ref_compare( base_type::a9_, rhs.a9_ );
-    }
-};
-
-#ifdef BOOST_MSVC
-#pragma warning(pop)
-#endif
 
 // bind_t
 
@@ -848,8 +265,15 @@ public:
     explicit rrlist( A&... a ): data_( a... ) {}
     template<class... B> explicit rrlist( rrlist<B...> const& r ): data_( r.data_ ) {}
 
-    template<int I, class Ai = typename std::tuple_element<I-1, args_type>::type> Ai&& operator[] ( boost::arg<I> ) const { return std::forward<Ai>( std::get<I-1>( data_ ) ); }
-    template<int I, class Ai = typename std::tuple_element<I-1, args_type>::type> Ai&& operator[] ( boost::arg<I>(*)() ) const { return std::forward<Ai>( std::get<I-1>( data_ ) ); }
+    template<int I> typename std::tuple_element<I-1, args_type>::type&& operator[] ( boost::arg<I> ) const
+    {
+        return std::forward<typename std::tuple_element<I-1, args_type>::type>( std::get<I-1>( data_ ) );
+    }
+
+    template<int I> typename std::tuple_element<I-1, args_type>::type&& operator[] ( boost::arg<I>(*)() ) const
+    {
+        return std::forward<typename std::tuple_element<I-1, args_type>::type>( std::get<I-1>( data_ ) );
+    }
 
     template<class T> T & operator[] ( _bi::value<T> & v ) const { return v.get(); }
 
@@ -889,25 +313,25 @@ public:
     template<class... A> result_type operator()( A&&... a )
     {
         rrlist<A...> a2( a... );
-        return l_( type<result_type>(), f_, a2, 0 );
+        return l_( type<result_type>(), f_, a2 );
     }
 
     template<class... A> result_type operator()( A&&... a ) const
     {
         rrlist<A...> a2( a... );
-        return l_( type<result_type>(), f_, a2, 0 );
+        return l_( type<result_type>(), f_, a2 );
     }
 
     //
 
     template<class A> result_type eval( A & a )
     {
-        return l_( type<result_type>(), f_, a, 0 );
+        return l_( type<result_type>(), f_, a );
     }
 
     template<class A> result_type eval( A & a ) const
     {
-        return l_( type<result_type>(), f_, a, 0 );
+        return l_( type<result_type>(), f_, a );
     }
 
     template<class V> void accept( V & v ) const
@@ -972,96 +396,11 @@ template<class R, class F, class L> struct add_value< bind_t<R, F, L> >
     typedef bind_t<R, F, L> type;
 };
 
-// list_av_N
+// list_av
 
-template<class A1> struct list_av_1
+template<class... A> struct list_av
 {
-    typedef typename add_value<A1>::type B1;
-    typedef list1<B1> type;
-};
-
-template<class A1, class A2> struct list_av_2
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef list2<B1, B2> type;
-};
-
-template<class A1, class A2, class A3> struct list_av_3
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef list3<B1, B2, B3> type;
-};
-
-template<class A1, class A2, class A3, class A4> struct list_av_4
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef typename add_value<A4>::type B4;
-    typedef list4<B1, B2, B3, B4> type;
-};
-
-template<class A1, class A2, class A3, class A4, class A5> struct list_av_5
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef typename add_value<A4>::type B4;
-    typedef typename add_value<A5>::type B5;
-    typedef list5<B1, B2, B3, B4, B5> type;
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6> struct list_av_6
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef typename add_value<A4>::type B4;
-    typedef typename add_value<A5>::type B5;
-    typedef typename add_value<A6>::type B6;
-    typedef list6<B1, B2, B3, B4, B5, B6> type;
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6, class A7> struct list_av_7
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef typename add_value<A4>::type B4;
-    typedef typename add_value<A5>::type B5;
-    typedef typename add_value<A6>::type B6;
-    typedef typename add_value<A7>::type B7;
-    typedef list7<B1, B2, B3, B4, B5, B6, B7> type;
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8> struct list_av_8
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef typename add_value<A4>::type B4;
-    typedef typename add_value<A5>::type B5;
-    typedef typename add_value<A6>::type B6;
-    typedef typename add_value<A7>::type B7;
-    typedef typename add_value<A8>::type B8;
-    typedef list8<B1, B2, B3, B4, B5, B6, B7, B8> type;
-};
-
-template<class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9> struct list_av_9
-{
-    typedef typename add_value<A1>::type B1;
-    typedef typename add_value<A2>::type B2;
-    typedef typename add_value<A3>::type B3;
-    typedef typename add_value<A4>::type B4;
-    typedef typename add_value<A5>::type B5;
-    typedef typename add_value<A6>::type B6;
-    typedef typename add_value<A7>::type B7;
-    typedef typename add_value<A8>::type B8;
-    typedef typename add_value<A9>::type B9;
-    typedef list9<B1, B2, B3, B4, B5, B6, B7, B8, B9> type;
+    typedef list< typename add_value<A>::type... > type;
 };
 
 // operator!
@@ -1072,10 +411,10 @@ struct logical_not
 };
 
 template<class R, class F, class L>
-    bind_t< bool, logical_not, list1< bind_t<R, F, L> > >
+    bind_t< bool, logical_not, list< bind_t<R, F, L> > >
     operator! (bind_t<R, F, L> const & f)
 {
-    typedef list1< bind_t<R, F, L> > list_type;
+    typedef list< bind_t<R, F, L> > list_type;
     return bind_t<bool, logical_not, list_type> ( logical_not(), list_type(f) );
 }
 
@@ -1089,11 +428,11 @@ struct name \
 }; \
  \
 template<class R, class F, class L, class A2> \
-    bind_t< bool, name, list2< bind_t<R, F, L>, typename add_value<A2>::type > > \
+    bind_t< bool, name, list< bind_t<R, F, L>, typename add_value<A2>::type > > \
     operator op (bind_t<R, F, L> const & f, A2 a2) \
 { \
     typedef typename add_value<A2>::type B2; \
-    typedef list2< bind_t<R, F, L>, B2> list_type; \
+    typedef list< bind_t<R, F, L>, B2> list_type; \
     return bind_t<bool, name, list_type> ( name(), list_type(f, a2) ); \
 }
 
@@ -1146,248 +485,32 @@ template< class R, class F, class L > struct is_bind_expression< _bi::bind_t< R,
 
 // generic function objects
 
-template<class R, class F>
-    _bi::bind_t<R, F, _bi::list0>
-    BOOST_BIND(F f)
+template<class R, class F, class... A>
+    _bi::bind_t<R, F, typename _bi::list_av<A...>::type>
+    BOOST_BIND( F f, A... a )
 {
-    typedef _bi::list0 list_type;
-    return _bi::bind_t<R, F, list_type> (f, list_type());
-}
-
-template<class R, class F, class A1>
-    _bi::bind_t<R, F, typename _bi::list_av_1<A1>::type>
-    BOOST_BIND(F f, A1 a1)
-{
-    typedef typename _bi::list_av_1<A1>::type list_type;
-    return _bi::bind_t<R, F, list_type> (f, list_type(a1));
-}
-
-template<class R, class F, class A1, class A2>
-    _bi::bind_t<R, F, typename _bi::list_av_2<A1, A2>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2)
-{
-    typedef typename _bi::list_av_2<A1, A2>::type list_type;
-    return _bi::bind_t<R, F, list_type> (f, list_type(a1, a2));
-}
-
-template<class R, class F, class A1, class A2, class A3>
-    _bi::bind_t<R, F, typename _bi::list_av_3<A1, A2, A3>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3)
-{
-    typedef typename _bi::list_av_3<A1, A2, A3>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4>
-    _bi::bind_t<R, F, typename _bi::list_av_4<A1, A2, A3, A4>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4)
-{
-    typedef typename _bi::list_av_4<A1, A2, A3, A4>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5>
-    _bi::bind_t<R, F, typename _bi::list_av_5<A1, A2, A3, A4, A5>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
-{
-    typedef typename _bi::list_av_5<A1, A2, A3, A4, A5>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6>
-    _bi::bind_t<R, F, typename _bi::list_av_6<A1, A2, A3, A4, A5, A6>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
-{
-    typedef typename _bi::list_av_6<A1, A2, A3, A4, A5, A6>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-    _bi::bind_t<R, F, typename _bi::list_av_7<A1, A2, A3, A4, A5, A6, A7>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
-{
-    typedef typename _bi::list_av_7<A1, A2, A3, A4, A5, A6, A7>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-    _bi::bind_t<R, F, typename _bi::list_av_8<A1, A2, A3, A4, A5, A6, A7, A8>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
-{
-    typedef typename _bi::list_av_8<A1, A2, A3, A4, A5, A6, A7, A8>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-    _bi::bind_t<R, F, typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
-{
-    typedef typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8, a9));
+    typedef typename _bi::list_av<A...>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a... ) );
 }
 
 // generic function objects, alternative syntax
 
-template<class R, class F>
-    _bi::bind_t<R, F, _bi::list0>
-    BOOST_BIND(boost::type<R>, F f)
+template<class R, class F, class... A>
+    _bi::bind_t<R, F, typename _bi::list_av<A...>::type>
+    BOOST_BIND( boost::type<R>, F f, A... a )
 {
-    typedef _bi::list0 list_type;
-    return _bi::bind_t<R, F, list_type> (f, list_type());
-}
-
-template<class R, class F, class A1>
-    _bi::bind_t<R, F, typename _bi::list_av_1<A1>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1)
-{
-    typedef typename _bi::list_av_1<A1>::type list_type;
-    return _bi::bind_t<R, F, list_type> (f, list_type(a1));
-}
-
-template<class R, class F, class A1, class A2>
-    _bi::bind_t<R, F, typename _bi::list_av_2<A1, A2>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2)
-{
-    typedef typename _bi::list_av_2<A1, A2>::type list_type;
-    return _bi::bind_t<R, F, list_type> (f, list_type(a1, a2));
-}
-
-template<class R, class F, class A1, class A2, class A3>
-    _bi::bind_t<R, F, typename _bi::list_av_3<A1, A2, A3>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3)
-{
-    typedef typename _bi::list_av_3<A1, A2, A3>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4>
-    _bi::bind_t<R, F, typename _bi::list_av_4<A1, A2, A3, A4>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3, A4 a4)
-{
-    typedef typename _bi::list_av_4<A1, A2, A3, A4>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5>
-    _bi::bind_t<R, F, typename _bi::list_av_5<A1, A2, A3, A4, A5>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
-{
-    typedef typename _bi::list_av_5<A1, A2, A3, A4, A5>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6>
-    _bi::bind_t<R, F, typename _bi::list_av_6<A1, A2, A3, A4, A5, A6>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
-{
-    typedef typename _bi::list_av_6<A1, A2, A3, A4, A5, A6>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-    _bi::bind_t<R, F, typename _bi::list_av_7<A1, A2, A3, A4, A5, A6, A7>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
-{
-    typedef typename _bi::list_av_7<A1, A2, A3, A4, A5, A6, A7>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-    _bi::bind_t<R, F, typename _bi::list_av_8<A1, A2, A3, A4, A5, A6, A7, A8>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
-{
-    typedef typename _bi::list_av_8<A1, A2, A3, A4, A5, A6, A7, A8>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8));
-}
-
-template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-    _bi::bind_t<R, F, typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type>
-    BOOST_BIND(boost::type<R>, F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
-{
-    typedef typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type list_type;
-    return _bi::bind_t<R, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8, a9));
+    typedef typename _bi::list_av<A...>::type list_type;
+    return _bi::bind_t<R, F, list_type>( f, list_type( a... ) );
 }
 
 // adaptable function objects
 
-template<class F>
-    _bi::bind_t<_bi::unspecified, F, _bi::list0>
-    BOOST_BIND(F f)
+template<class F, class... A>
+    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av<A...>::type>
+    BOOST_BIND( F f, A... a )
 {
-    typedef _bi::list0 list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type> (f, list_type());
-}
-
-template<class F, class A1>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_1<A1>::type>
-    BOOST_BIND(F f, A1 a1)
-{
-    typedef typename _bi::list_av_1<A1>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type> (f, list_type(a1));
-}
-
-template<class F, class A1, class A2>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_2<A1, A2>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2)
-{
-    typedef typename _bi::list_av_2<A1, A2>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type> (f, list_type(a1, a2));
-}
-
-template<class F, class A1, class A2, class A3>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_3<A1, A2, A3>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3)
-{
-    typedef typename _bi::list_av_3<A1, A2, A3>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3));
-}
-
-template<class F, class A1, class A2, class A3, class A4>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_4<A1, A2, A3, A4>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4)
-{
-    typedef typename _bi::list_av_4<A1, A2, A3, A4>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4));
-}
-
-template<class F, class A1, class A2, class A3, class A4, class A5>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_5<A1, A2, A3, A4, A5>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
-{
-    typedef typename _bi::list_av_5<A1, A2, A3, A4, A5>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4, a5));
-}
-
-template<class F, class A1, class A2, class A3, class A4, class A5, class A6>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_6<A1, A2, A3, A4, A5, A6>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
-{
-    typedef typename _bi::list_av_6<A1, A2, A3, A4, A5, A6>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6));
-}
-
-template<class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_7<A1, A2, A3, A4, A5, A6, A7>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
-{
-    typedef typename _bi::list_av_7<A1, A2, A3, A4, A5, A6, A7>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7));
-}
-
-template<class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_8<A1, A2, A3, A4, A5, A6, A7, A8>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
-{
-    typedef typename _bi::list_av_8<A1, A2, A3, A4, A5, A6, A7, A8>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8));
-}
-
-template<class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-    _bi::bind_t<_bi::unspecified, F, typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type>
-    BOOST_BIND(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
-{
-    typedef typename _bi::list_av_9<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>(f, list_type(a1, a2, a3, a4, a5, a6, a7, a8, a9));
+    typedef typename _bi::list_av<A...>::type list_type;
+    return _bi::bind_t<_bi::unspecified, F, list_type>( f, list_type( a... ) );
 }
 
 // function pointers
@@ -1591,14 +714,14 @@ template< class A1, class M, class T >
 _bi::bind_t<
     typename _bi::dm_result< M T::*, A1 >::type,
     _mfi::dm<M, T>,
-    typename _bi::list_av_1<A1>::type
+    typename _bi::list_av<A1>::type
 >
 
 BOOST_BIND( M T::*f, A1 a1 )
 {
     typedef typename _bi::dm_result< M T::*, A1 >::type result_type;
     typedef _mfi::dm<M, T> F;
-    typedef typename _bi::list_av_1<A1>::type list_type;
+    typedef typename _bi::list_av<A1>::type list_type;
     return _bi::bind_t< result_type, F, list_type >( F( f ), list_type( a1 ) );
 }
 

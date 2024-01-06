@@ -172,6 +172,11 @@ public:
 
     list( A... a ): data_( a... ) {}
 
+#if BOOST_MSVC
+# pragma warning( push )
+# pragma warning( disable: 4100 ) // unreferenced formal parameter 'a2'
+#endif
+
     template<class R, class F, class A2, std::size_t... I> R call_impl( type<R>, F & f, A2 & a2, _bi::index_sequence<I...> )
     {
         return unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
@@ -191,6 +196,10 @@ public:
     {
         unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
+
+#if BOOST_MSVC
+# pragma warning( pop )
+#endif
 
     //
 

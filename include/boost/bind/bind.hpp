@@ -481,7 +481,7 @@ template< class R, class F, class L > struct is_bind_expression< _bi::bind_t< R,
 
 // generic function objects
 
-#if !BOOST_WORKAROUND(__GNUC__, < 5)
+#if !BOOST_WORKAROUND(__GNUC__, < 6)
 
 template<class R, class F, class... A>
     _bi::bind_t<R, F, typename _bi::list_av<A...>::type>
@@ -493,7 +493,8 @@ template<class R, class F, class... A>
 
 #else
 
-// g++ 4.x considers boost::bind<void>( &X::f ) ambiguous w/ the above
+// g++ 4.x (and some 5.x) consider boost::bind<void>( &X::f )
+// ambiguous if the variadic form above is used
 
 template<class R, class F>
     _bi::bind_t<R, F, typename _bi::list_av<>::type>

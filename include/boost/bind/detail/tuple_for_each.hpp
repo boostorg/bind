@@ -1,7 +1,7 @@
 #ifndef BOOST_BIND_DETAIL_TUPLE_FOR_EACH_HPP_INCLUDED
 #define BOOST_BIND_DETAIL_TUPLE_FOR_EACH_HPP_INCLUDED
 
-//  Copyright 2015-2020 Peter Dimov.
+//  Copyright 2015-2020, 2024 Peter Dimov.
 //
 //  Distributed under the Boost Software License, Version 1.0.
 //
@@ -9,11 +9,12 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 
 #include <boost/bind/detail/integer_sequence.hpp>
+#include <boost/config.hpp>
 #include <utility>
 #include <type_traits>
 #include <cstddef>
 
-#if BOOST_MP11_MSVC
+#if BOOST_MSVC
 # pragma warning( push )
 # pragma warning( disable: 4100 ) // unreferenced formal parameter 'tp'
 #endif
@@ -56,7 +57,7 @@ template<class F, class Tp1, class Tp2> F tuple_for_each( F&& f, Tp1&& tp1, Tp2&
 } // namespace _bi
 } // namespace boost
 
-#if BOOST_MP11_MSVC
+#if BOOST_MSVC
 # pragma warning( pop )
 #endif
 

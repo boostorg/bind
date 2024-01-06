@@ -20,6 +20,10 @@
 #include <boost/mem_fn.hpp>
 #include <boost/core/lightweight_test.hpp>
 
+#if defined(__clang__)
+# pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
 struct X
 {
     int dm_1;

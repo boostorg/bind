@@ -14,7 +14,7 @@
 #include <type_traits>
 #include <cstddef>
 
-#if BOOST_MSVC
+#if defined(BOOST_MSVC)
 # pragma warning( push )
 # pragma warning( disable: 4100 ) // unreferenced formal parameter 'tp'
 #endif
@@ -57,7 +57,7 @@ template<class F, class Tp1, class Tp2> F tuple_for_each( F&& f, Tp1&& tp1, Tp2&
 } // namespace _bi
 } // namespace boost
 
-#if BOOST_MSVC
+#if defined(BOOST_MSVC)
 # pragma warning( pop )
 #endif
 

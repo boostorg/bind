@@ -172,7 +172,7 @@ public:
 
     list( A... a ): data_( a... ) {}
 
-#if BOOST_MSVC
+#if defined(BOOST_MSVC)
 # pragma warning( push )
 # pragma warning( disable: 4100 ) // unreferenced formal parameter 'a2'
 #endif
@@ -197,7 +197,7 @@ public:
         unwrapper<F>::unwrap( f, 0 )( a2[ std::get<I>( data_ ) ]... );
     }
 
-#if BOOST_MSVC
+#if defined(BOOST_MSVC)
 # pragma warning( pop )
 #endif
 

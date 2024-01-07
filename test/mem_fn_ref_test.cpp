@@ -8,6 +8,10 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 //
 
+#if defined(__GNUC__) && defined(__SANITIZE_ADDRESS__)
+# pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 #include <boost/mem_fn.hpp>
 #include <boost/ref.hpp>
 #include <boost/core/lightweight_test.hpp>

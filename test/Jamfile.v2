@@ -10,7 +10,6 @@
 import testing ;
 
 local gcc-flags = -Wundef ;
-local clang-flags = ; # $(gcc-flags) ;
 
 project
   : default-build
@@ -20,12 +19,11 @@ project
   : requirements
 
     <toolset>msvc:<warnings-as-errors>on
-
     <toolset>gcc:<warnings-as-errors>on
-    <toolset>gcc:<cxxflags>$(gcc-flags)
-
     <toolset>clang:<warnings-as-errors>on
-    <toolset>clang:<cxxflags>$(clang-flags)
+
+    <toolset>gcc:<cxxflags>$(gcc-flags)
+    <toolset>clang:<cxxflags>$(gcc-flags)
   ;
 
 # quick test (for CI)

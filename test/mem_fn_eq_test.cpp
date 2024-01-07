@@ -20,7 +20,7 @@
 #include <boost/mem_fn.hpp>
 #include <boost/core/lightweight_test.hpp>
 
-#if defined(__clang__)
+#if defined(BOOST_CLANG_VERSION) && BOOST_CLANG_VERSION >= 130000
 # pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #endif
 

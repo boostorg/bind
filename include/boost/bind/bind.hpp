@@ -311,7 +311,7 @@ public:
     typedef typename result_traits<R, F>::type result_type;
     typedef bind_t this_type;
 
-    bind_t( F f, L const & l ): f_( f ), l_( l ) {}
+    bind_t( F f, L const & l ): f_( std::move(f) ), l_( l ) {}
 
     //
 
@@ -497,7 +497,7 @@ template<class R, class F, class... A>
     BOOST_BIND( F f, A... a )
 {
     typedef typename _bi::list_av<A...>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a... ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a... ) );
 }
 
 #else
@@ -510,7 +510,7 @@ template<class R, class F>
     BOOST_BIND( F f )
 {
     typedef typename _bi::list_av<>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type() );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type() );
 }
 
 template<class R, class F, class A1>
@@ -518,7 +518,7 @@ template<class R, class F, class A1>
     BOOST_BIND( F f, A1 a1 )
 {
     typedef typename _bi::list_av<A1>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1 ) );
 }
 
 template<class R, class F, class A1, class A2>
@@ -526,7 +526,7 @@ template<class R, class F, class A1, class A2>
     BOOST_BIND( F f, A1 a1, A2 a2 )
 {
     typedef typename _bi::list_av<A1, A2>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3>
@@ -534,7 +534,7 @@ template<class R, class F, class A1, class A2, class A3>
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3 )
 {
     typedef typename _bi::list_av<A1, A2, A3>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3, class A4>
@@ -542,7 +542,7 @@ template<class R, class F, class A1, class A2, class A3, class A4>
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4 )
 {
     typedef typename _bi::list_av<A1, A2, A3, A4>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3, a4 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3, class A4, class A5>
@@ -550,7 +550,7 @@ template<class R, class F, class A1, class A2, class A3, class A4, class A5>
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
 {
     typedef typename _bi::list_av<A1, A2, A3, A4, A5>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3, a4, a5 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6>
@@ -558,7 +558,7 @@ template<class R, class F, class A1, class A2, class A3, class A4, class A5, cla
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6 )
 {
     typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3, a4, a5, a6 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
@@ -566,7 +566,7 @@ template<class R, class F, class A1, class A2, class A3, class A4, class A5, cla
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7 )
 {
     typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6, a7 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3, a4, a5, a6, a7 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
@@ -574,7 +574,7 @@ template<class R, class F, class A1, class A2, class A3, class A4, class A5, cla
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8 )
 {
     typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7, A8>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6, a7, a8 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3, a4, a5, a6, a7, a8 ) );
 }
 
 template<class R, class F, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
@@ -582,7 +582,7 @@ template<class R, class F, class A1, class A2, class A3, class A4, class A5, cla
     BOOST_BIND( F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9 )
 {
     typedef typename _bi::list_av<A1, A2, A3, A4, A5, A6, A7, A8, A9>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a1, a2, a3, a4, a5, a6, a7, a8, a9 ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a1, a2, a3, a4, a5, a6, a7, a8, a9 ) );
 }
 
 #endif
@@ -594,7 +594,7 @@ template<class R, class F, class... A>
     BOOST_BIND( boost::type<R>, F f, A... a )
 {
     typedef typename _bi::list_av<A...>::type list_type;
-    return _bi::bind_t<R, F, list_type>( f, list_type( a... ) );
+    return _bi::bind_t<R, F, list_type>( std::move(f), list_type( a... ) );
 }
 
 // adaptable function objects
@@ -604,7 +604,7 @@ template<class F, class... A>
     BOOST_BIND( F f, A... a )
 {
     typedef typename _bi::list_av<A...>::type list_type;
-    return _bi::bind_t<_bi::unspecified, F, list_type>( f, list_type( a... ) );
+    return _bi::bind_t<_bi::unspecified, F, list_type>( std::move(f), list_type( a... ) );
 }
 
 // function pointers

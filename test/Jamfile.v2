@@ -26,6 +26,11 @@ project
     <toolset>clang:<cxxflags>$(gcc-flags)
   ;
 
+project : requirements
+    <source>/boost/smart_ptr//boost_smart_ptr
+    <source>/boost/function//boost_function
+    ;
+
 # quick test (for CI)
 run quick.cpp ;
 

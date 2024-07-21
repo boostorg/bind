@@ -27,8 +27,8 @@ project
   ;
 
 project : requirements
-    <source>/boost/smart_ptr//boost_smart_ptr
-    <source>/boost/function//boost_function
+    <library>/boost/smart_ptr//boost_smart_ptr
+    <library>/boost/function//boost_function
     ;
 
 # quick test (for CI)

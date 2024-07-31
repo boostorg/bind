@@ -24,7 +24,11 @@ project
 
     <toolset>gcc:<cxxflags>$(gcc-flags)
     <toolset>clang:<cxxflags>$(gcc-flags)
-  ;
+
+    <library>/boost/bind//boost_bind
+    <library>/boost/smart_ptr//boost_smart_ptr
+    <library>/boost/function//boost_function
+    ;
 
 # quick test (for CI)
 run quick.cpp ;

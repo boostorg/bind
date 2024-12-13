@@ -319,8 +319,8 @@ local windows_pipeline(name, image, environment, arch = "amd64") =
     ),
 
     linux_pipeline(
-        "Linux 24.04 Clang 19",
-        "cppalliance/droneubuntu2404:1",
+        "Linux 24.10 Clang 19",
+        "cppalliance/droneubuntu2410:1",
         { TOOLSET: 'clang', COMPILER: 'clang++-19', CXXSTD: '11,14,17,20,2b' },
         "clang-19",
     ),

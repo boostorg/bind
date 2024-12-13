@@ -80,7 +80,8 @@ run placeholder_const_ref_test.cpp ;
 run bind_function_ap_test.cpp ;
 run bind_type_test.cpp ;
 run bind_unique_ptr_test.cpp ;
-run bind_nested_rv_test.cpp ;
+run bind_nested_rv_test.cpp
+  : : : <toolset>gcc-4.7:<build>no ;
 compile arg_copy_test.cpp ;
 compile-fail arg_copy_fail.cpp
   : <warnings>off ;
